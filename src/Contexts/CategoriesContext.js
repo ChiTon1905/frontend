@@ -7,7 +7,7 @@ const url1='http://127.0.0.1:8000/api/categories'
 const url2='https://bookstore2001.000webhostapp.com/api/categories'
 
 export const CategoryContextProvider = ({ children }) => {
-    const [categories, setCategories] = useState([])
+    const [category, setCategory] = useState([])
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -15,7 +15,7 @@ export const CategoryContextProvider = ({ children }) => {
                     const respone = await axios.get(url1)
                         .then(response => {
                             console.log(response.data)
-                            setCategories(response.data.data)
+                            setCategory(response.data.data)
                         })
                 } catch (error) {
                     console.error('error fetching', error)
@@ -26,8 +26,8 @@ export const CategoryContextProvider = ({ children }) => {
     return (
         <CategoryContext.Provider
         value={{
-            categories,
-            setCategories
+            category,
+            setCategory
         }}
         >
             {

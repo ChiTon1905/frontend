@@ -1,73 +1,148 @@
+
 import React from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { useUser } from '../../../Contexts/UserContext'
+
+import { useGoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const Login = () => {
+    const {
+        handleSubmit,
+        email,
+        setEmail,
+        password,
+        setPassword,
+        user,
+        setUser,
+        updateUser,
+        name,
+        setName,
+        address, 
+        setAddress,
+        phone, 
+        setPhone,
+        genre, 
+        setGenre
+    } = useUser()
+
+    console.log(email, 'email')
+
+    console.log(password, 'password')
+
+    const navigate = useNavigate();
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async tokenResponse => {
+            console.log(tokenResponse);
+            // fetching userinfo can be done on the client or the server
+            const userInfo = await axios
+                .get('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: {
+                        Authorization: `Bearer ${tokenResponse.access_token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                })
+                .then(res => res.data);
+
+            console.log(userInfo);
+
+            const responseUser = await axios.post('http://127.0.0.1:8000/api/save-google-user', userInfo);
+
+            console.log('user-google-save', responseUser.data)
+            localStorage.setItem('token', responseUser.data.token)
+            localStorage.setItem('user', JSON.stringify(responseUser.data.user));
+
+            setUser(JSON.parse(localStorage.getItem('user')))
+
+            navigate('/')
+        }
+    })
+
+
     return (
-        <div className='mt-10 mb-10'>
-            <div className="flex justify-center">
-                <div className="flex flex-col justify-center items-center md:flex-row shadow rounded-xl max-w-7xl w-[90%]  m-2">
-                    <div className=" w-full md:w-3/4">
-                        <div className="text-xl cursor-pointer flex flex-col justify-center items-center mt-5 md:mt-0 py-4">
-                            {/* Login using Social accounts */}
-                            <h1 className="font-semibold text-xl md:text-5xl text-gray-600 m-2">Login to your account</h1>
-                        </div>
-                        <div className="flex flex-col justify-center items-center m-2 space-y-6 md:space-y-8">
-                            <div className="">
-                                <input type="text" placeholder="User Name"
-                                    className=" bg-gray-100 rounded-lg px-5 py-2 focus:border 
-                                    border-blue-600 focus:outline-none text-black 
-                                    placeholder:text-gray-600 placeholder:opacity-50 
-                                    font-semibold md:w-72 lg:w-[340px]"/>
+        <section className="my-auto dark:bg-gray-900">
+            <div className="mt-36 mb-36 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+                <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                            Sign in to your account
+                        </h1>
+                        <form className="space-y-4 md:space-y-6" action="#" onSubmit={handleSubmit}>
+                            <div>
+                                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+                                <input type="email" name="email" id="email" value={email}
+                                    className="bg-gray-50 border border-gray-300 
+                                text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 
+                                focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 
+                                dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+                                dark:focus:border-blue-500" placeholder="name@gmail.com" required=""
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
                             </div>
-                            <div className="">
-                                <input type="password" placeholder="Password"
-                                    className=" bg-gray-100 
-                                    rounded-lg px-5 py-2 
-                                    focus:border border-blue-600 
-                                    focus:outline-none text-black 
-                                    placeholder:text-gray-600 placeholder:opacity-50 
-                                    font-semibold md:w-72 lg:w-[340px]"/>
+                            <div>
+                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                                <input type="password" name="password" id="password" value={password}
+                                    placeholder="••••••••"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg f
+                                ocus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700
+                                 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
+                                  dark:focus:border-blue-500" required=""
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
                             </div>
-                            <div className="flex items-center justify-between ">
-                                <div className="flex items-center h-5">
-                                    <input id="remember" 
-                                    aria-describedby="remember" 
-                                    type="checkbox" 
-                                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 
-                                    dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 
-                                    dark:ring-offset-gray-800" required=""/>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-start">
+                                    <div className="flex items-center h-5">
+                                        <input id="remember"
+                                            aria-describedby="remember" type="checkbox"
+                                            className="w-4 h-4 border border-gray-300 rounded 
+                                        bg-gray-50 focus:ring-3 focus:ring-primary-300 
+                                        dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600
+                                         dark:ring-offset-gray-800" required="" />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="remember"
+                                            className="text-gray-500 dark:text-gray-300">Remember me</label>
+                                    </div>
                                 </div>
-                                <div className="ml-3 text-sm">
-                                    <label htmlFor="remember" className="text-gray-500 dark:text-gray-300">Remember me</label>
-                                </div>
-                                <Link to="#" className="text-sm font-medium 
-                                text-primary-600 hover:underline 
-                                dark:text-primary-500 ml-36">Forgot password?</Link>
+                                <Link to="#"
+                                    className="text-sm font-medium text-primary-600 
+                                hover:underline dark:text-primary-500">Forgot password?</Link>
                             </div>
-                        </div>
+                            <button type="submit" className="w-full 
+                            text-white bg-primary-600 hover:bg-primary-700 
+                            focus:ring-4 focus:outline-none focus:ring-primary-300 
+                            font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:
+                            bg-primary-600 dark:hover:bg-primary-700
+                             dark:focus:ring-primary-800">
+                                Sign in
+                            </button>
 
-                        <div className="text-center mt-7">
-                            <button
-                                className=" px-24 md:px-[118px] lg:px-[140px] py-2 rounded-md text-white bg-gradient-to-l 
-                                from-blue-400 to-emerald-400  font-medium m-2 mb-6 ">Sign
-                                In</button>
-                        </div>
+                            <button onClick={() => googleLogin()} className="w-full 
+                            text-white bg-orange-600 hover:bg-orange-700 
+                            focus:ring-4 focus:outline-none focus:ring-orange-300 
+                            font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:
+                            bg-orange-600 dark:hover:bg-orange-700
+                             dark:focus:ring-orange-800">
+                                Sign in with Google
+                            </button>
 
-                    </div>
-                    <div
-                        className="h-[100%] w-full md:w-1/3  bg-gradient-to-l from-blue-400 to-emerald-400  items-center flex justify-center">
-
-                        <div className="text-white text-base font-semibold text-center my-10 space-y-2 m-2">
-                            <h1 className="text-5xl">New Here?</h1>
-                            <h1 className="">Sign Up and discover new oppurtinities here</h1>
-                            <Link to='/register'>
-                                <button className="bg-white rounded-2xl px-4 text-emerald-400 py-1">Sign Up</button>
-                            </Link>
-                        </div>
+                            <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                                Don’t have an account yet?
+                                <Link to="/register"
+                                    className="font-medium text-primary-600 
+                                hover:underline dark:text-primary-500">Sign up</Link>
+                            </p>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     )
 }
 

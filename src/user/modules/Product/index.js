@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import {  useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs'
 import { useProduct } from '../../../Contexts/ProductContext'
+import { Link, useNavigate } from 'react-router-dom'
+import { useUser } from '../../../Contexts/UserContext'
+import { FaHeart } from "react-icons/fa";
+import axios from 'axios'
+
 
 const Product = () => {
     const { id } = useParams()
+    const navigate = useNavigate()
 
     const [product, setProduct] = useState([])
     console.log(id, 'id', product)
@@ -13,6 +19,13 @@ const Product = () => {
     const [activeimg, setActiveImage] = useState(null)
 
     const { amount, setAmount } = useProduct()
+
+    const { pricePromotion, setPricePromotion } = useState(0)
+
+    const [isInWishlist, setIsInWishlist] = useState(false);
+    const {
+        user
+     } = useUser()
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -26,7 +39,26 @@ const Product = () => {
             setActiveImage(data.data.attributes.image[0].image_path);
 
         }
+        const checkWishlist = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/wishlist', {
+                    params: {
+                        user_id: user.id
+                    }
+                });
+
+                const wishlistProducts = response.data.wishlist.data.map(item => item.book.id);
+                setIsInWishlist(wishlistProducts.includes(id));
+
+                
+            } catch (error) {
+                console.error('Error checking wishlist:', error);
+            }
+        };
+
+
         fetchProduct()
+        checkWishlist();
     }, [id])
 
     const IncreaseAmount = (prev) => {
@@ -79,7 +111,56 @@ const Product = () => {
         }
     }
 
-    //handlecart
+    const handleCart = (product, redirect) => {
+        console.log(product)
+        const cart = JSON.parse(localStorage.getItem('cart')) || []
+        const isProductExist = cart.find(item => item.id === product.id)
+        if (isProductExist) {
+            const updateCart = cart.map(item => {
+                if (item.id === product.id) {
+                    return {
+                        ...item,
+                        quantity: item.quantity + 1
+                    }
+                }
+                return item
+
+            })
+            updateCart.forEach(item => {
+                const originalPrice = item.attributes.price;
+                const discountPercentage = item.attributes.promotion.discount;
+                item.price = originalPrice - originalPrice * discountPercentage;
+            });
+            localStorage.setItem('cart', JSON.stringify(updateCart))
+        } else {
+            const discountedPrice = product.attributes.price - product.attributes.price * product.attributes.promotion.discount;
+            localStorage.setItem('cart', JSON.stringify([...cart, { ...product, quantity: amount, price: discountedPrice }]));
+        }
+        setAmount(1)
+        alert('product add to cart')
+        if (redirect) {
+            navigate('/cart')
+        }
+    }
+
+    const handleCreateOrDeleteItemWishList = async () => {
+        if (user) {
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/api/wishlist/createordelete', {
+                    user_id: user.id,
+                    book_id: product.id
+                });
+    
+                console.log('wishlist',response.data);
+                setIsInWishlist(previousState => !previousState);
+                alert(response.data.message)
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        } else {
+            alert('Bạn phải đăng nhập mới yêu thích được');
+        }
+    };
 
     if (!Object.keys(product).length > 0) return <div>Loading...</div>
 
@@ -126,13 +207,17 @@ const Product = () => {
                     <div className="flex mb-4">
                         <div className='font-medium'>
                             Nhà xuất bản:
-                            <span className='ml-2 font-bold uppercase text-gray-900'>
-                                {product.attributes.publisher?.name}
+                            <span className='ml-2 font-bold uppercase text-gray-900 hover:text-blue-500'>
+                                <Link to={`http://localhost:3000/publishers/${product.attributes.publisher?.id}`}>
+                                    {product.attributes.publisher?.name}
+                                </Link>
                             </span>
                             <div className='mt-2'>
                                 Hình thức bìa:
-                                <span className='ml-2 font-bold uppercase text-gray-900'>
-                                    {product.attributes.booklayout?.name}
+                                <span className='ml-2 font-bold uppercase text-gray-900 hover:text-blue-500'>
+                                    <Link to={`http://localhost:3000/booklayouts/${product.attributes.booklayout?.id}`}>
+                                        {product.attributes.booklayout?.name}
+                                    </Link>
                                 </span>
                             </div>
                         </div>
@@ -140,16 +225,20 @@ const Product = () => {
                             Tác giả:
                             {
                                 bookauthors.map((bookauthor, index) => (
-                                    <span key={bookauthor.author.id} className='ml-2 font-bold uppercase text-gray-900'>
-                                        {bookauthor.author.name}
+                                    <span key={bookauthor.author.id} className='ml-2 font-bold uppercase text-gray-900 hover:text-blue-500'>
+                                        <Link to={`http://localhost:3000/authors/${bookauthor.author?.id}`}>
+                                            {bookauthor.author.name}
+                                        </Link>
                                         {index < bookauthors.length - 1 && ', '}
                                     </span>
                                 ))
                             }
                             <div className='mt-2'>
                                 Ngôn ngữ:
-                                <span className='ml-2 font-bold uppercase text-gray-900'>
-                                    {product.attributes.language?.name}
+                                <span className='ml-2 font-bold uppercase text-gray-900 hover:text-blue-500'>
+                                    <Link to={`http://localhost:3000/languages/${product.attributes.language?.id}`}>
+                                        {product.attributes.language?.name}
+                                    </Link>
                                 </span>
                             </div>
                         </div>
@@ -158,22 +247,22 @@ const Product = () => {
                         {product.attributes.description}</p>
                     <div className="flex flex-nowrap justify-start items-center">
                         <div className="title-font font-medium text-base text-gray-900 line-through mr-5">
-                            ${product.attributes.price}
+                            {product.attributes.price} d
                         </div>
                         <div className="title-font font-medium text-2xl text-red-500 mr-40">
-                            ${
+                            {
                                 product.attributes.price - product.attributes.price * product.attributes.promotion.discount
-                            }
+                            } d
                             &nbsp;
                             -
                             {
                                 product.attributes.promotion.discount * 100
                             }%
                         </div>
-                        <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
-                            <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
-                            </svg>
+                        <button 
+                        onClick={handleCreateOrDeleteItemWishList}
+                        className={`rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4 hover:text-red-500 ${isInWishlist ? 'text-red-500' : ''}`}>
+                            <FaHeart />
                         </button>
                     </div>
                     <div className='flex flex-row items-center'>
@@ -196,12 +285,12 @@ const Product = () => {
                         <button className="flex mt-5 text-white bg-indigo-500 
                                 border-0 py-2 px-6 focus:outline-none
                                  hover:bg-indigo-600 rounded mr-5"
-                            onClick={() => { }}
+                            onClick={() => handleCart(product, true)}
                         >
                             Buy it now</button>
                         <button className="flex mt-5 border border-indigo-500 py-2 px-6 focus:outline-none
                                  hover:bg-indigo-600 hover:text-white rounded"
-                            onClick={() => { }}
+                            onClick={() => handleCart(product)}
                         >
                             Add to cart</button>
                     </div>

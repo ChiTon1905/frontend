@@ -29,16 +29,16 @@ const Dropdown = ({ cats = [] }) => {
                         aria-labelledby="options-menu"
                     >
                         {
-                            cats.map((category, index) => {
+                            cats.map((category) => {
                                 return (
                                     <Link
-                                        key={category.attributes.id}
-                                        to="#"
+                                        key={category.id}
+                                        to={`http://localhost:3000/categories/${category.id}`}
                                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         role="menuitem"
                                         
                                     >
-                                        {category.attributes.name}
+                                        {category.attributes.cat_name}
                                     </Link>
                                 )
                             })
