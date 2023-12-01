@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useUser } from '../../../Contexts/UserContext'
 
@@ -32,6 +32,9 @@ const Register = () => {
     console.log(password, 'password')
 
     console.log(passwordConfirmation, 'passwordConfirmation')
+    useEffect(() => {
+        document.title = 'Register'
+    },[])
 
     return (
         <div className="mt-10 mb-10 relative flex flex-col items-center

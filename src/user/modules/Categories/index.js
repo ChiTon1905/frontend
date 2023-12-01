@@ -23,6 +23,8 @@ const Categories = () => {
             }
         };
 
+        document.title = 'Categories';
+
         fetchCategories();
     }, [id]);
 

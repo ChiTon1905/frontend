@@ -23,6 +23,7 @@ const Publishers = () => {
             }
         };
 
+        document.title = 'Publishers';
         fetchPublishers();
     }, [id]);
 

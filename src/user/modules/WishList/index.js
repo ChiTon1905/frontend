@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-js-pagination';
+
+
 import { useUser } from '../../../Contexts/UserContext'
 
 import axios from 'axios'
@@ -30,6 +32,7 @@ const WishList = () => {
                 console.error('Error fetching wishlist:', error);
             }
         };
+        document.title = 'Wishlist';
         fetchWishlist();
     }, [currentPage]);
     console.log('wishlist-index', wishlist);

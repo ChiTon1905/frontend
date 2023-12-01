@@ -44,6 +44,8 @@ const UserInfo = () => {
             setPhone(user.phone);
             setEmail(user.email);    
         }
+
+        document.title = 'User info';
       }, []);
 
     

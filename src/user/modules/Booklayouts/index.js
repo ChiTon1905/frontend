@@ -23,6 +23,7 @@ const Booklayouts = () => {
             }
         };
 
+        document.title = 'Booklayout';
         fetchBooklayouts();
     }, [id]);
 

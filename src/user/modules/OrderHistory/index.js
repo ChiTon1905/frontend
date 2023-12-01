@@ -35,6 +35,7 @@ const OrderHistory = () => {
 
             }
         }
+        document.title = 'Order history';
         fetchOrderHistory()
     }, [currentPage])
 
@@ -80,6 +81,9 @@ const OrderHistory = () => {
                             Thành tiền
                         </th>
                         <th scope="col" className="px-6 py-3">
+                            Phương thức thanh toán
+                        </th>
+                        <th scope="col" className="px-6 py-3">
                             Ngày đặt hàng
                         </th>
                     </tr>
@@ -95,6 +99,9 @@ const OrderHistory = () => {
                                 </th>
                                 <td className="px-6 py-4">
                                     {order.total}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {order.payment}
                                 </td>
                                 <td className="px-6 py-4">
                                     {formatDate(order.date)}

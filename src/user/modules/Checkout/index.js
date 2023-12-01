@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../Contexts/UserContext'
 
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Checkout = () => {
+    const navigate = useNavigate();
 
     const [total, setTotal] = useState(0)
     const [address, setAddress] = useState('')
     const [phone, setPhone] = useState('')
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
-    const [ orderDetails, setOrderDetails ] = useState([])
+    const [payment, setPayment] = useState('');
+    const [orderDetails, setOrderDetails] = useState([])
+    const [redirectToPayment, setRedirectToPayment] = useState(true);
     const carts = JSON.parse(localStorage.getItem('cart')) || []
 
     const { user } = useUser()
@@ -22,6 +29,7 @@ const Checkout = () => {
             return acc + (item.price * item.quantity)
         }, 0)
         setTotal(total)
+        document.title = 'Checkout';
     }, [])
 
     console.log('name', name)
@@ -33,26 +41,65 @@ const Checkout = () => {
     const handleStoreOrder = async (e) => {
         e.preventDefault()
 
+        if(payment === 'VN PAY') {
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/api/process-payment', {
+                    // Include any necessary payment data here
+                    amount: total,
+                    redirect: redirectToPayment,
+                });
+    
+                if (response.data.code === '00' && response.data.data.redirectUrl) {
+                    if (redirectToPayment) {
+                        window.location.href = response.data.data.redirectUrl;
+                    } else {
+                        console.log('Payment URL:', response.data.data);
+                        // Handle the URL as needed, e.g., open in a new tab
+                    }
+                } else {
+                    console.log('Response data:', response.data);
+                    console.error('message', response.data.message);
+                }
+            } catch (error) {
+                console.error('Error during payment:', error);
+            }
+        }
+
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/store-order',{
+            const response = await axios.post('http://127.0.0.1:8000/api/store-order', {
                 email: email,
                 phone: phone,
                 address: address,
                 total: total,
+                payment: payment,
                 order_details: orderDetails
             })
             setEmail('')
             setName('')
             setAddress('')
             setPhone('')
+            setPayment('')
+            localStorage.removeItem('cart')
+            
 
             console.log("store-order", response.data)
-            alert('Đặt đơn hàng thành công !!!!')
+            toast.success('Đặt đơn hàng thành công !!!!', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            document.title = `Order Confirmation - Total: $${total.toFixed(2)}`;
+            navigate('/cart')
         } catch (e) {
             console.error('error: ', e.message)
         }
-        
     }
+
 
     return (
         <div className='flex flex-col bg-gray-250'>
@@ -111,55 +158,6 @@ const Checkout = () => {
                             dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
                             dark:focus:border-blue-500" placeholder="Nhập địa chỉ" required />
                     </div>
-                    <div className="grid gap-6 mb-6 md:grid-cols-3">
-
-                        <div>
-                            <label htmlFor="countries"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Thành phố
-                            </label>
-                            <select id="countries"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm 
-                            rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
-                            dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                            dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option defaultSelected>Chọn TP</option>
-                                <option value="US">United States</option>
-                                <option value="CA">Canada</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label htmlFor="distric"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Quận</label>
-                            <select id="distric"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
-                              focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
-                              dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
-                               dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option defaultSelected>Chọn quận</option>
-                                <option value="US">United States</option>
-                                <option value="CA">Canada</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label htmlFor="ward"
-                                className="block mb-2 text-sm font-medium text-gray-900 
-                            dark:text-white">Phường</label>
-                            <select id="ward"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 
-                            text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
-                            block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 
-                            dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
-                             dark:focus:border-blue-500">
-                                <option defaultSelected>Chọn phường</option>
-                                <option value="US">United States</option>
-                                <option value="CA">Canada</option>
-                            </select>
-                        </div>
-
-                    </div>
-
                 </form>
             </div>
             <div className='containter border rounded-lg mr-5 ml-5 mt-5 justify-center'>
@@ -169,14 +167,17 @@ const Checkout = () => {
                 <hr className='w-11/12 items-center justify-center ml-5 mb-5'>
                 </hr>
                 <div className="flex items-center mb-4 ml-5">
-                    <input defaultChecked id="default-radio-1"
+                    <input
+                        id="default-radio-1"
                         type="radio"
-                        value=""
+                        value="Thanh toán khi nhận hàng"
+                        onChange={(e) => setPayment(e.target.value)}
                         name="default-radio"
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 
                      dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 
                      dark:bg-gray-700 dark:border-gray-600"/>
                     <label
+
                         htmlFor="default-radio-1"
                         className="ms-2 text-base font-medium text-gray-900 dark:text-gray-300">
                         Thanh toán khi nhận hàng
@@ -185,7 +186,8 @@ const Checkout = () => {
                 <div className="flex items-center mb-4 ml-5">
                     <input id="default-radio-1"
                         type="radio"
-                        value=""
+                        value="VN PAY"
+                        onChange={(e) => setPayment(e.target.value)}
                         name="default-radio"
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 
                      dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 
@@ -193,7 +195,7 @@ const Checkout = () => {
                     <label
                         htmlFor="default-radio-1"
                         className="ms-2 text-base font-medium text-gray-900 dark:text-gray-300">
-                        Bank
+                        VN PAY
                     </label>
                 </div>
             </div>

@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect, createContext } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const urlbackend = 'https://bookstore2001.000webhostapp.com/'
 const urllocalhost = 'http://127.0.0.1:8000/api/'
@@ -19,7 +21,7 @@ export const UserContextProvider = ({ children }) => {
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
-    const [genre, setGenre ] = useState('')
+    const [genre, setGenre] = useState('')
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [isValidName, setIsValidName] = useState(true);
     const [isValidPassword, setIsValidPassword] = useState(true);
@@ -124,6 +126,16 @@ export const UserContextProvider = ({ children }) => {
                 }
 
                 console.log(response.data.data);
+                toast.success('Đăng nhập thành công', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 navigate('/')
             })
             .catch(error => {
@@ -189,9 +201,9 @@ export const UserContextProvider = ({ children }) => {
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
+            setUser(JSON.parse(storedUser));
         }
-      }, []);
+    }, []);
 
 
     return (
@@ -220,15 +232,15 @@ export const UserContextProvider = ({ children }) => {
                 isValidName,
                 isValidPassword,
                 isValidPasswordConfirmation,
-                address, 
+                address,
                 setAddress,
-                phone, 
+                phone,
                 setPhone,
-                isValidPhone, 
+                isValidPhone,
                 setIsValidPhone,
                 handlePhoneChange,
                 handleAddressChange,
-                genre, 
+                genre,
                 setGenre
 
 

@@ -24,6 +24,7 @@ const Authors = () => {
         };
 
         fetchAuthors();
+        document.title = 'Author';
     }, [id]);
 
     console.log('Authors', Authors)

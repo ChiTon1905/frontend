@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { useUser } from '../../../Contexts/UserContext'
@@ -34,6 +34,10 @@ const Login = () => {
     console.log(password, 'password')
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = 'Login'
+    },[])
 
     const googleLogin = useGoogleLogin({
         onSuccess: async tokenResponse => {

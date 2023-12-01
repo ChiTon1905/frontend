@@ -34,6 +34,7 @@ const OrderHistoryDetail = () => {
                 console.error('Error fetching ', error);
             }
         }
+        document.title = 'Order Detail History';
         fetchOrderDetailHistory()
     }, [id])
 

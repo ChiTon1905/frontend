@@ -6,6 +6,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useUser } from '../../../Contexts/UserContext'
 import { FaHeart } from "react-icons/fa";
 import axios from 'axios'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Product = () => {
@@ -25,7 +27,7 @@ const Product = () => {
     const [isInWishlist, setIsInWishlist] = useState(false);
     const {
         user
-     } = useUser()
+    } = useUser()
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -37,6 +39,8 @@ const Product = () => {
 
             setImages(data.data.attributes.image);
             setActiveImage(data.data.attributes.image[0].image_path);
+
+            document.title = `${data.data.attributes.name}`;
 
         }
         const checkWishlist = async () => {
@@ -50,12 +54,13 @@ const Product = () => {
                 const wishlistProducts = response.data.wishlist.data.map(item => item.book.id);
                 setIsInWishlist(wishlistProducts.includes(id));
 
-                
+
             } catch (error) {
                 console.error('Error checking wishlist:', error);
             }
         };
 
+        
 
         fetchProduct()
         checkWishlist();
@@ -150,15 +155,33 @@ const Product = () => {
                     user_id: user.id,
                     book_id: product.id
                 });
-    
-                console.log('wishlist',response.data);
+
+                console.log('wishlist', response.data);
                 setIsInWishlist(previousState => !previousState);
-                alert(response.data.message)
+                toast.success(response.data.message, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             } catch (error) {
                 console.error('Error:', error.message);
             }
         } else {
-            alert('Bạn phải đăng nhập mới yêu thích được');
+            toast.error('Bạn phải đăng nhập mới yêu thích được',{
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     };
 
@@ -259,9 +282,9 @@ const Product = () => {
                                 product.attributes.promotion.discount * 100
                             }%
                         </div>
-                        <button 
-                        onClick={handleCreateOrDeleteItemWishList}
-                        className={`rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4 hover:text-red-500 ${isInWishlist ? 'text-red-500' : ''}`}>
+                        <button
+                            onClick={handleCreateOrDeleteItemWishList}
+                            className={`rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4 hover:text-red-500 ${isInWishlist ? 'text-red-500' : ''}`}>
                             <FaHeart />
                         </button>
                     </div>
@@ -297,6 +320,7 @@ const Product = () => {
                 </div>
 
             </div>
+            
         </section>
     )
 }

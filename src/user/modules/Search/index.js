@@ -93,6 +93,7 @@ const Search = () => {
 
             }
         }
+        document.title = 'Books';
         fetchBooks()
     }, [categories, author, publisher, booklayout, language, search, sort_by, sort_order, currentPage, state.perPage, dispatch])
 

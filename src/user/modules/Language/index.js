@@ -11,13 +11,18 @@ const Languages = () => {
     console.log(id, 'id', languages)
 
     useEffect(() => {
-        const fetchLanguages = async (e) => {
+        const fetchLanguages = async () => {
             try {
-                const response = await axios.get(`https://bookstore2001.000webhostapp.com/api/languages/${id}`)
-                    .then(respone => {
-                        setlanguages(respone.data);
-                    })
-                console.log('axios', languages)
+                const response = await axios.get(`http://127.0.0.1:8000/api/languages/${id}`);
+                const data = response.data;
+
+                // Update state after successful response
+                setlanguages(data);
+
+                // Set document title after updating state
+
+                document.title = `Language - ${data.data.attributes.name}`;
+
             } catch (error) {
                 console.error('Error fetching:', error);
             }
@@ -43,17 +48,17 @@ const Languages = () => {
                     <div className="flex flex-wrap -m-4">
                         {languages.data.attributes.books.map((product) => (
                             <div className="lg:w-1/4 md:w-1/2 p-4 w-full mb-4 cursor-pointer"
-                             key={product.id} >
+                                key={product.id} >
                                 <Link to={`/books/${product.id}`} className="block relative h-48 rounded overflow-hidden">
                                     <img
-                                        alt={ product.attributes.name }
+                                        alt={product.attributes.name}
                                         className="object-contain object-center w-full h-full block"
                                         src={`http://127.0.0.1:8000/images/${product.attributes.image[0].image_path}`} />
                                 </Link>
                                 <div className="mt-4">
-                                    <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1 uppercase">{ languages.data.attributes.name }</h3>
-                                    <h2 className="text-gray-900 title-font text-xl font-medium">{ product.attributes.name }</h2>
-                                    <p className="mt-1 text-ellipsis font-semibold">{ product.attributes.price - (product.attributes.price * product.attributes.promotion.discount ) }đ</p>
+                                    <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1 uppercase">{languages.data.attributes.name}</h3>
+                                    <h2 className="text-gray-900 title-font text-xl font-medium">{product.attributes.name}</h2>
+                                    <p className="mt-1 text-ellipsis font-semibold">{product.attributes.price - (product.attributes.price * product.attributes.promotion.discount)}đ</p>
                                 </div>
                             </div>
                         ))}

@@ -14,6 +14,8 @@ const Cart = () => {
       return acc + (item.price * item.quantity)
     }, 0)
     setTotal(total)
+
+    document.title = `Shopping Cart - Total: $${total.toFixed(0)}`;
   }, [carts])
 
   const handleInc = (id) => {
