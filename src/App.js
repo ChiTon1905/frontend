@@ -3,8 +3,9 @@ import React from 'react';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import {
-  Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Customers
-  , Kanban, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor, Line
+  Ecommerce, Orders, Employees, Stacked, Pyramid, Customers
+  ,  Area, Bar, Pie, Financial, ColorMapping, Line,
+  Category, Author, Language, Promotion, Publisher, Booklayout, 
 } from './admin/pages';
 import AppAdmin from './admin/App';
 
@@ -35,6 +36,17 @@ import UserInfo from './user/modules/UserInfo';
 import OrderHistory from './user/modules/OrderHistory';
 import OrderHistoryDetail from './user/modules/OrderHistoryDetail';
 import WishList from './user/modules/WishList';
+import FormCategoryCreate from './admin/pages/Form/FormCategoryCreate';
+import FormCategoryUpdate from './admin/pages/Form/FormCategoryUpdate';
+import FormAuthorCreate from './admin/pages/Form/FormAuthorCreate';
+import FormAuthorUpdate from './admin/pages/Form/FormAuthorUpdate';
+import FormBooklayoutUpdate from './admin/pages/Form/FormBooklayoutUpdate';
+import FormBooklayoutCreate from './admin/pages/Form/FormBooklayoutCreate'
+import FormPublisherCreate from './admin/pages/Form/FormPublisherCreate';
+import FormPublisherUpdate from './admin/pages/Form/FormPublisherUpdate';
+import FormLanguageCreate from './admin/pages/Form/FormLanguageCreate';
+import FormLanguageUpdate from './admin/pages/Form/FormLanguageUpdate';
+
 
 
 function App() {
@@ -81,15 +93,32 @@ function App() {
                         <Route path='/admin/ecommerce' element={<AppAdmin><Ecommerce /></AppAdmin>}></Route>
 
                         {/* Pages */}
+                        <Route path='/admin/category' element={<AppAdmin><Category /></AppAdmin>}></Route>
+                        <Route path='/admin/category-create' element={<AppAdmin><FormCategoryCreate /></AppAdmin>}></Route>
+                        <Route path='/admin/category-update/:id' element={<AppAdmin><FormCategoryUpdate /></AppAdmin>}></Route>
+                        
+                        <Route path='/admin/author' element={<AppAdmin><Author /></AppAdmin>}></Route>
+                        <Route path='/admin/author-create' element={<AppAdmin><FormAuthorCreate /></AppAdmin>}></Route>
+                        <Route path='/admin/author-update/:id' element={<AppAdmin><FormAuthorUpdate /></AppAdmin>}></Route>
+
+                        <Route path='/admin/publisher' element={<AppAdmin><Publisher /></AppAdmin>}></Route>
+                        <Route path='/admin/publisher-create' element={<AppAdmin><FormPublisherCreate /></AppAdmin>}></Route>
+                        <Route path='/admin/publisher-update/:id' element={<AppAdmin><FormPublisherUpdate /></AppAdmin>}></Route>
+
+                        
+                        <Route path='/admin/language' element={<AppAdmin><Language /></AppAdmin>}></Route>
+                        <Route path='/admin/language-create' element={<AppAdmin><FormLanguageCreate /></AppAdmin>}></Route>
+                        <Route path='/admin/language-update/:id' element={<AppAdmin><FormLanguageUpdate /></AppAdmin>}></Route>
+
+                        <Route path='/admin/booklayout' element={<AppAdmin><Booklayout /></AppAdmin>}></Route>
+                        <Route path='/admin/booklayout-create' element={<AppAdmin><FormBooklayoutCreate /></AppAdmin>}></Route>
+                        <Route path='/admin/booklayout-update/:id' element={<AppAdmin><FormBooklayoutUpdate /></AppAdmin>}></Route>
+
+                        
+                        <Route path='/admin/promotion' element={<AppAdmin><Promotion /></AppAdmin>}></Route>
                         <Route path='/admin/orders' element={<AppAdmin><Orders /></AppAdmin>}></Route>
                         <Route path='/admin/employees' element={<AppAdmin><Employees /></AppAdmin>}></Route>
                         <Route path='/admin/customers' element={<AppAdmin><Customers /></AppAdmin>}></Route>
-
-                        {/* Apps */}
-                        <Route path='/admin/kanban' element={<AppAdmin><Kanban /></AppAdmin>}></Route>
-                        <Route path='/admin/editor' element={<AppAdmin><Editor /></AppAdmin>}></Route>
-                        <Route path='/admin/calendar' element={<AppAdmin><Calendar /></AppAdmin>}></Route>
-                        <Route path='/color-picker' element={<AppAdmin><ColorPicker /></AppAdmin>}></Route>
 
                         {/* Charts */}
                         <Route path='/admin/line' element={<AppAdmin><Line /></AppAdmin>}></Route>

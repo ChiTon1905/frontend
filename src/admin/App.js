@@ -6,6 +6,8 @@ import {
   Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Customers
   , Kanban, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor, Line
 } from './pages';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function AppAdmin({ children }) {
@@ -14,6 +16,18 @@ function AppAdmin({ children }) {
       <IndexAdmin >
        { children }
         </IndexAdmin >
+        <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
         {/*
         /* dong duoi k lien quan 
         <Routes>

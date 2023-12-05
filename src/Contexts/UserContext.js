@@ -136,13 +136,14 @@ export const UserContextProvider = ({ children }) => {
                     progress: undefined,
                     theme: "light",
                 });
-                navigate('/')
+               
             })
             .catch(error => {
-                console.error(error.response.data);
+                console.error(error.message);
             });
 
     };
+
 
     const handleLogout = async () => {
 
@@ -199,11 +200,42 @@ export const UserContextProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
+        console.log("User object:", user);
+        console.log("User roles:", user ? user.roles : null);
+      
+    
+        if (user && user.roles && user.roles.length > 0) {
+            const isAdmin = user.roles.some(role => role.name === 'admin');
+            if (isAdmin) {
+                console.log("Navigating to /admin");
+                navigate('/admin');
+            } else {
+                console.log("Navigating to /");
+                navigate('/');
+            }
+        } else if (user && (!user.roles || user.roles.length === 0)) {
+           
+            console.log("User has no roles");
+            
+            navigate('/');
+        } else {
+            console.log("User or roles information is missing");
+            
         }
-    }, []);
+    }, [user]);
+
+    useEffect(() => {
+        if (!user) {
+            const storedUser = localStorage.getItem('user');
+            try {
+                if (storedUser) {
+                    setUser(JSON.parse(storedUser));
+                }
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+            }
+        }
+    }, []); 
 
 
     return (
