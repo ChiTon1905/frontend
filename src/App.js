@@ -46,6 +46,10 @@ import FormPublisherCreate from './admin/pages/Form/FormPublisherCreate';
 import FormPublisherUpdate from './admin/pages/Form/FormPublisherUpdate';
 import FormLanguageCreate from './admin/pages/Form/FormLanguageCreate';
 import FormLanguageUpdate from './admin/pages/Form/FormLanguageUpdate';
+import Book from './admin/pages/Book';
+import FormBookCreate from './admin/pages/Form/FormBookCreate';
+import { PromotionsContextProvider } from './Contexts/PromotionContext';
+import FormBookUpdate from './admin/pages/Form/FormBookUpdate';
 
 
 
@@ -60,6 +64,7 @@ function App() {
               <PublishersContextProvider>
                 <LanguagesContextProvider>
                   <BooklayoutsContextProvider>
+                    <PromotionsContextProvider>
                     <SearchContextProvider>
 
 
@@ -120,6 +125,10 @@ function App() {
                         <Route path='/admin/employees' element={<AppAdmin><Employees /></AppAdmin>}></Route>
                         <Route path='/admin/customers' element={<AppAdmin><Customers /></AppAdmin>}></Route>
 
+                        <Route path='/admin/book' element={<AppAdmin><Book /></AppAdmin>}></Route>
+                        <Route path='/admin/book-create' element={<AppAdmin><FormBookCreate /></AppAdmin>}></Route>
+                        <Route path='/admin/book-update/:id' element={<AppAdmin><FormBookUpdate /></AppAdmin>}></Route>
+
                         {/* Charts */}
                         <Route path='/admin/line' element={<AppAdmin><Line /></AppAdmin>}></Route>
 
@@ -135,6 +144,7 @@ function App() {
 
 
                     </SearchContextProvider>
+                    </PromotionsContextProvider>
                   </BooklayoutsContextProvider>
                 </LanguagesContextProvider>
               </PublishersContextProvider>

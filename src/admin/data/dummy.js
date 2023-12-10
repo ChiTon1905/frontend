@@ -8,7 +8,7 @@ import { MdOutlineSupervisorAccount } from 'react-icons/md';
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { GiLouvrePyramid } from 'react-icons/gi';
 import { CiBookmark,CiStopSign1 } from "react-icons/ci";
-import { FaUserPen,FaBuildingUser,FaBook } from "react-icons/fa6";
+import { FaUserPen,FaBuildingUser,FaBook, FaBookOpen } from "react-icons/fa6";
 import { FaLanguage } from "react-icons/fa";
 
 
@@ -55,6 +55,10 @@ export const links = [
       {
         name: 'promotion',
         icon: <CiStopSign1 />
+      },
+      {
+        name: 'book',
+        icon: <FaBookOpen />
       },
       {
         name: 'orders',

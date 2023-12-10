@@ -18,16 +18,15 @@ export const AuthorContextProvider = ({ children }) => {
 
     const fetchAuthors = async () => {
         try {
-            const respone = await axios.get(url1)
-                .then(response => {
-                    console.log(response.data)
-                    setAuthors(response.data.data)
-                    setFilterData(response.data.data)
-                })
+            const response = await axios.get(url1);
+            console.log(response.data);
+            setAuthors(response.data.data);
+            setFilterData(response.data.data);
         } catch (error) {
-            console.error('error fetching', error)
+            console.error('Error fetching:', error);
+            // Additional error handling, if needed
         }
-    }
+    };
 
     useEffect(() => {
             fetchAuthors()
