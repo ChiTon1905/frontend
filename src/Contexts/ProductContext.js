@@ -28,6 +28,7 @@ export const ProductContextProvider = ({ children }) => {
   const [booklayoutSelected, setBooklayoutSelected] = useState('');
   const [promotionSelected, setPromotionSelected] = useState('');
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [filterPublisherSelected, setFilterPublisherSelected] = useState('');
 
 
   const [products, setProducts] = useState([])
@@ -49,19 +50,29 @@ export const ProductContextProvider = ({ children }) => {
 
   const fetchProductsTable = async () => {
     try {
-      const response = await axios.get(urladmin);
-      console.log(response.data);
+      const params = {};
+
+      if (filterPublisherSelected.length > 0) {
+        params.publishers = filterPublisherSelected.join(',');
+      }
+
+      const response = await axios.get(urladmin, { params });
+
+      // Update state variables with the received data
       setProductsData(response.data.data);
       setFilterData(response.data.data);
     } catch (error) {
-      console.error('error fetching', error);
+      console.error('Error fetching data', error);
     }
   };
 
   useEffect(() => {
     fetchProducts()
-    fetchProductsTable()
   }, [])
+
+  useEffect(() => {
+    fetchProductsTable()
+  }, [filterPublisherSelected])
 
   const handleFileChange = (e) => {
     e.preventDefault()
@@ -95,7 +106,7 @@ export const ProductContextProvider = ({ children }) => {
 
       // Append each author to FormData
       authorSelected.forEach((author, index) => {
-        formData.append(`author_id[${index}]`, author);
+        formData.append(`author_id[${index}]`, author.value); // Use author.value instead of author
       });
 
       // Append each selected file to FormData
@@ -107,7 +118,7 @@ export const ProductContextProvider = ({ children }) => {
 
       toast.success("Thêm sách thành công")
 
-      await fetchProductsTable()
+      fetchProductsTable()
       setName('')
       setAuthorSelected([])
       setCategorySelected('')
@@ -119,6 +130,7 @@ export const ProductContextProvider = ({ children }) => {
       setQuantity('')
       setPrice('')
       setSelectedFiles([])
+      navigate('/admin/book')
 
       console.log(response.data); // Handle the response from the server as needed
     } catch (error) {
@@ -140,14 +152,14 @@ export const ProductContextProvider = ({ children }) => {
         booklayout_id: parseInt(booklayoutSelected),
         publisher_id: parseInt(publisherSelected),
         language_id: parseInt(languageSelected),
-        author_id: authorSelected.map(authorId => parseInt(authorId)),
+        author_id: authorSelected.map((author) => parseInt(author.value)),
       };
 
       // Assuming 'id' is available in your component
       const response = await axios.post(`http://127.0.0.1:8000/api/books/${id}`, updatedBookData);
 
       console.log('Updated book data:', response.data);
-      await fetchProductsTable()
+      fetchProductsTable()
       setName('')
       setAuthorSelected([])
       setCategorySelected('')
@@ -159,6 +171,7 @@ export const ProductContextProvider = ({ children }) => {
       setQuantity('')
       setPrice('')
       setSelectedFiles([])
+      navigate('/admin/book')
 
       toast.success("Cập nhật sách thành công")
 
@@ -202,6 +215,18 @@ export const ProductContextProvider = ({ children }) => {
     }
   };
 
+  const handleCheckboxChange = (publisher) => {
+    setFilterPublisherSelected((prevPublishers) => {
+      if (prevPublishers.includes(publisher)) {
+        // If already selected, remove it
+        return prevPublishers.filter((p) => p !== publisher);
+      } else {
+        // If not selected, add it
+        return [...prevPublishers, publisher];
+      }
+    });
+  };
+
 
   const bookState = {
     products,
@@ -220,6 +245,7 @@ export const ProductContextProvider = ({ children }) => {
     promotionSelected,
     selectedFiles,
     productsData,
+    filterPublisherSelected,
   };
 
   const bookActions = {
@@ -243,7 +269,9 @@ export const ProductContextProvider = ({ children }) => {
     handleCreateBook,
     setProductsData,
     handleUpdateBook,
-    deleteBook
+    deleteBook,
+    handleCheckboxChange, 
+    setFilterPublisherSelected,
   };
 
 

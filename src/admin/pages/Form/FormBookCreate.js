@@ -7,6 +7,7 @@ import { usePublishers } from '../../../Contexts/PublishersContext';
 import { usePromotions } from '../../../Contexts/PromotionContext'
 import { useProduct } from '../../../Contexts/ProductContext';
 import axios from 'axios';
+import Select from 'react-select';
 
 const FormBookCreate = () => {
 
@@ -46,6 +47,15 @@ const FormBookCreate = () => {
     const { languages, setLanguages } = useLanguages()
     const { publishers, setPublishers } = usePublishers()
     const { promotions, setPromotions } = usePromotions()
+
+    const handleAuthorChange = (selectedAuthors) => {
+        setAuthorSelected(selectedAuthors);
+    };
+
+    const authorOptions = authors.map((author) => ({
+        value: author.id,
+        label: author.attributes.name,
+    }));
 
     console.log('name', name)
     console.log('category selected', categorySelected)
@@ -163,38 +173,17 @@ const FormBookCreate = () => {
                     </select>
                 </div>
                 <div className='mb-6'>
-                    <label htmlFor="Author" className="block mb-2 text-sm font-medium text-gray-900 
-                    dark:text-white">
-                        Tác giả</label>
-                    <select
+                    <label htmlFor="Author" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Tác giả
+                    </label>
+                    <Select
                         id="multiSelection"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 
-                    dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
-                    dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        onChange={(e) => {
-                            const selectedValue = e.target.value;
-                            if (authorSelected.includes(selectedValue)) {
-                                // Remove the author if already selected
-                                setAuthorSelected(prevAuthors => prevAuthors.filter(author => author !== selectedValue));
-                            } else {
-                                // Add the author if not selected
-                                setAuthorSelected(prevAuthors => [...prevAuthors, selectedValue]);
-                            }
-                        }}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        isMulti
+                        onChange={handleAuthorChange}
+                        options={authorOptions}
                         value={authorSelected}
-                        data-te-select-init
-                        multiple>
-                        {
-                            authors.map((cat) => (
-                                <option
-                                    key={cat.id}
-                                    value={cat.id}
-                                >
-                                    {cat.attributes.name}</option>
-                            ))
-                        }
-                    </select>
+                    />
                 </div>
                 <div className='mb-6'>
                     <label htmlFor="promotion" className="block mb-2 text-sm font-medium text-gray-900 

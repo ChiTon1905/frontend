@@ -93,7 +93,7 @@ export const PublishersContextProvider = ({ children }) => {
                         theme: "light",
                     });
                 }
-                window.location.reload()
+                fetchPublishers()
             } catch (error) {
                 console.error('Error deleting Publisher:', error);
                 toast.error('Đã có sách ', {

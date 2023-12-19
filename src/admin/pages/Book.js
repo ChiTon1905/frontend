@@ -6,10 +6,26 @@ import { useProduct } from '../../Contexts/ProductContext';
 import { CiSearch } from "react-icons/ci";
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
+import { usePublishers } from '../../Contexts/PublishersContext';
 
 const Book = () => {
 
-    const { productsData, setProductsData, filterData, setFilterData, deleteBook } = useProduct()
+    const {
+        productsData,
+        setProductsData,
+        filterData,
+        setFilterData,
+        publisherSelected,
+        setPublisherSelected,
+        deleteBook,
+        handleCheckboxChange,
+        filterPublisherSelected,
+        setFilterPublisherSelected
+    } = useProduct()
+
+    const {
+        publishers,
+        setPublishers, } = usePublishers()
     const [search, setSearch] = useState('')
     const navigate = useNavigate()
     const { id } = useParams()
@@ -127,7 +143,8 @@ const Book = () => {
 
 
 
-
+    console.log('filterData:', filterData);
+    console.log('pub', filterPublisherSelected)
     return (
         <div className='mt-12 ml-5 mr-5'>
             <div className='flex flex-wrap lg:flex-nowarp justify-end'>
@@ -163,6 +180,36 @@ const Book = () => {
                     uppercase">
                     create
                 </button>
+            </div>
+            <div className='flex flex-row items-center mt-5 ml-5'>
+                <p>
+                    Theo NXB:
+                </p>
+                {
+                    publishers.map((pub) => (
+                        <div key={pub.attributes.name} className="flex items-center ml-5">
+                            <input
+                                id={`checkbox-${pub.attributes.name}`}
+                                type="checkbox"
+                                value={pub.attributes.name}
+                                checked={filterPublisherSelected.includes(pub.attributes.name)}
+                                onChange={() => handleCheckboxChange(pub.attributes.name)}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded 
+                                      focus:ring-blue-500 dark:focus:ring-blue-600 
+                                      dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 
+                                      dark:border-gray-600"
+                            />
+                            <label
+                                htmlFor={`checkbox-${pub.attributes.name}`}
+                                className="ms-2 text-sm font-medium 
+                                       text-gray-900 dark:text-gray-300"
+                            >
+                                {pub.attributes.name}
+                            </label>
+                        </div>
+                    )
+                    )
+                }
             </div>
             <div className='flex flex-wrap justify-center items-center mt-5' >
                 <DataTable

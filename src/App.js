@@ -50,6 +50,13 @@ import Book from './admin/pages/Book';
 import FormBookCreate from './admin/pages/Form/FormBookCreate';
 import { PromotionsContextProvider } from './Contexts/PromotionContext';
 import FormBookUpdate from './admin/pages/Form/FormBookUpdate';
+import OrderDetail from './admin/components/OrderDetail';
+import FormUserCreate from './admin/pages/Form/FormUserCreate';
+import FormUserUpdate from './admin/pages/Form/FormUserUpdate';
+import FormUserRole from './admin/pages/Form/FormUserRole';
+import FormUserPermissions from './admin/pages/Form/FormUserPermissions';
+import FormPromotionCreate from './admin/pages/Form/FormPromotionCreate';
+import FormPromotionUpdate from './admin/pages/Form/FormPromotionUpdate';
 
 
 
@@ -121,8 +128,18 @@ function App() {
 
                         
                         <Route path='/admin/promotion' element={<AppAdmin><Promotion /></AppAdmin>}></Route>
+                        <Route path='/admin/promotion-create' element={<AppAdmin><FormPromotionCreate /></AppAdmin>}></Route>
+                        <Route path='/admin/promotion-update/:id' element={<AppAdmin><FormPromotionUpdate /></AppAdmin>}></Route>
+
                         <Route path='/admin/orders' element={<AppAdmin><Orders /></AppAdmin>}></Route>
+                        <Route path='/admin/orderdetail/:id' element={<AppAdmin><OrderDetail /></AppAdmin>}></Route>
+
                         <Route path='/admin/employees' element={<AppAdmin><Employees /></AppAdmin>}></Route>
+                        <Route path='/admin/employees-create' element={<AppAdmin><FormUserCreate /></AppAdmin>}></Route>
+                        <Route path='/admin/employees-update/:id' element={<AppAdmin><FormUserUpdate /></AppAdmin>}></Route>
+                        <Route path='/admin/employees-role/:id' element={<AppAdmin><FormUserRole /></AppAdmin>}></Route>
+                        <Route path='/admin/employees-permissions/:id' element={<AppAdmin><FormUserPermissions /></AppAdmin>}></Route>
+
                         <Route path='/admin/customers' element={<AppAdmin><Customers /></AppAdmin>}></Route>
 
                         <Route path='/admin/book' element={<AppAdmin><Book /></AppAdmin>}></Route>

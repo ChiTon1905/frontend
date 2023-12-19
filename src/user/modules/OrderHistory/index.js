@@ -3,7 +3,8 @@ import axios from 'axios';
 import ReactPaginate from 'react-js-pagination';
 import { useUser } from '../../../Contexts/UserContext';
 import { Link } from 'react-router-dom';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const OrderHistory = () => {
 
@@ -12,29 +13,30 @@ const OrderHistory = () => {
     const [perPage, setPerPage] = useState(1);
     const [orderHistory, setOrderHistory] = useState([])
     const { user } = useUser()
+    const fetchOrderHistory = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/orderhistory', {
+                params: {
+                    user_id: user.id,
+                    page: currentPage,
+                },
+            });
+
+            console.log(response.data)
+            setOrderHistory(response.data.order.data)
+            setTotalPage(response.data.order.total)
+            setPerPage(response.data.order.per_page)
+            console.log('order', orderHistory)
+
+        } catch (error) {
+
+            console.error('Error fetching ', error);
+
+        }
+    }
 
     useEffect(() => {
-        const fetchOrderHistory = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/orderhistory', {
-                    params: {
-                        user_id: user.id,
-                        page: currentPage,
-                    },
-                });
-
-                console.log(response.data)
-                setOrderHistory(response.data.order.data)
-                setTotalPage(response.data.order.total)
-                setPerPage(response.data.order.per_page)
-                console.log('order', orderHistory)
-
-            } catch (error) {
-
-                console.error('Error fetching ', error);
-
-            }
-        }
+       
         document.title = 'Order history';
         fetchOrderHistory()
     }, [currentPage])
@@ -53,6 +55,48 @@ const OrderHistory = () => {
         setCurrentPage(pageNumber)
         console.log('Current Page:', pageNumber);
     };
+
+    const handleDone = (id) => {
+        axios.post(`http://127.0.0.1:8000/api/order/confirm-order/${id}`)
+          .then(response => {
+            console.log(response);
+            if (response.data && response.data.message) {
+              toast.success(response.data.message);
+              fetchOrderHistory()
+            } else {
+              toast.error('Invalid response from the server');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            if (error.response && error.response.data && error.response.data.message) {
+              toast.error(error.response.data.message);
+            } else {
+              toast.error('An error occurred while done the order.');
+            }
+          });
+      }
+
+      const handleCancel = (id) => {
+        axios.post(`http://127.0.0.1:8000/api/order/cancel-order/${id}`)
+          .then(response => {
+            console.log(response);
+            if (response.data && response.data.message) {
+              toast.success(response.data.message);
+              fetchOrderHistory()
+            } else {
+              toast.error('Invalid response from the server');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            if (error.response && error.response.data && error.response.data.message) {
+              toast.error(error.response.data.message);
+            } else {
+              toast.error('An error occurred while cancel the order.');
+            }
+          });
+      }
 
     if (orderHistory.length === 0) {
         return (
@@ -78,6 +122,9 @@ const OrderHistory = () => {
                             Mã đơn hàng
                         </th>
                         <th scope="col" className="px-6 py-3">
+                            Trạng thái đơn hàng
+                        </th>
+                        <th scope="col" className="px-6 py-3">
                             Thành tiền
                         </th>
                         <th scope="col" className="px-6 py-3">
@@ -85,6 +132,9 @@ const OrderHistory = () => {
                         </th>
                         <th scope="col" className="px-6 py-3">
                             Ngày đặt hàng
+                        </th>
+                        <th scope="col" className="px-6 py-3" colSpan={2}>
+                            Action
                         </th>
                     </tr>
                 </thead>
@@ -98,6 +148,9 @@ const OrderHistory = () => {
                                     </Link>
                                 </th>
                                 <td className="px-6 py-4">
+                                    {order.status}
+                                </td>
+                                <td className="px-6 py-4">
                                     {order.total}
                                 </td>
                                 <td className="px-6 py-4">
@@ -105,6 +158,30 @@ const OrderHistory = () => {
                                 </td>
                                 <td className="px-6 py-4">
                                     {formatDate(order.date)}
+                                </td>
+                                <td className="px-6 py-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleDone(order.id)}
+
+                                        className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none 
+                                                focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 
+                                                dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 
+                                                uppercase whitespace-nowrap"
+                                        disabled={order.status === 'chưa xác nhận'}
+                                    >
+                                        Đã nhận
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCancel(order.id)}
+                                        className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none 
+                                                focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 
+                                                dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 
+                                                uppercase whitespace-nowrap ml-2"
+                                    >
+                                        Hủy
+                                    </button>
                                 </td>
                             </tr>
                         ))

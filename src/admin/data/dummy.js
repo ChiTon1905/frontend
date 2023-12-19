@@ -74,45 +74,59 @@ export const links = [
       },
     ],
   },
+];
+
+
+export const linksEmployee = [
   {
-    title: 'Charts',
+    title: 'Dashboard',
     links: [
       {
-        name: 'line',
-        icon: <AiOutlineStock />,
+        name: 'ecommerce',
+        icon: <FiShoppingBag />,
       },
-      {
-        name: 'area',
-        icon: <AiOutlineAreaChart />,
-      },
+    ],
+  },
 
+  {
+    title: 'Pages',
+    links: [
       {
-        name: 'bar',
-        icon: <AiOutlineBarChart />,
+        name: 'category',
+        icon: <CiBookmark />
       },
       {
-        name: 'pie',
-        icon: <FiPieChart />,
+        name: 'author',
+        icon: <FaUserPen />
       },
       {
-        name: 'financial',
-        icon: <RiStockLine />,
+        name: 'publisher',
+        icon: <FaBuildingUser />
       },
       {
-        name: 'color-mapping',
-        icon: <BsBarChart />,
+        name: 'language',
+        icon: <FaLanguage />
       },
       {
-        name: 'pyramid',
-        icon: <GiLouvrePyramid />,
+        name: 'booklayout',
+        icon: <FaBook />
       },
       {
-        name: 'stacked',
-        icon: <AiOutlineBarChart />,
+        name: 'promotion',
+        icon: <CiStopSign1 />
+      },
+      {
+        name: 'book',
+        icon: <FaBookOpen />
+      },
+      {
+        name: 'orders',
+        icon: <AiOutlineShoppingCart />,
       },
     ],
   },
 ];
+
 
 
 export const chatData = [

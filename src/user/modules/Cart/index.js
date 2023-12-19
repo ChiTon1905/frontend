@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUser } from '../../../Contexts/UserContext'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Cart = () => {
   const navigate = useNavigate()
@@ -21,9 +23,13 @@ const Cart = () => {
   const handleInc = (id) => {
     const updateCart = carts.map(item => {
       if (item.id === id) {
-        return {
-          ...item,
-          quantity: item.quantity + 1
+        if ((item.quantity + 1) > item.attributes.quantity) {
+          toast('Đặt quá số lượng sách')
+        } else {
+          return {
+            ...item,
+            quantity: item.quantity + 1
+          }
         }
       }
       return item
@@ -35,9 +41,10 @@ const Cart = () => {
   const handleDec = (id) => {
     const updateCart = carts.map(item => {
       if (item.id === id) {
+        const newQuantity = Math.max(1, item.quantity - 1);
         return {
           ...item,
-          quantity: item.quantity - 1
+          quantity: newQuantity
         }
       }
       return item

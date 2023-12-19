@@ -8,6 +8,8 @@ import { usePromotions } from '../../../Contexts/PromotionContext'
 import { useProduct } from '../../../Contexts/ProductContext';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'
+import Select from 'react-select';
+
 
 import DataTable from 'react-data-table-component';
 import { toast } from 'react-toastify';
@@ -72,7 +74,12 @@ const FormBookUpdate = () => {
             setDescription(bookData.data.attributes.description)
             setQuantity(bookData.data.attributes.quantity.toString())
             setPrice(bookData.data.attributes.price.toString())
-            setAuthorSelected(bookData.data.attributes.authors.map(author => String(author.id)));
+            setAuthorSelected(
+                bookData.data.attributes.authors.map((author) => ({
+                  value: String(author.id),
+                  label: author.name,
+                }))
+              );
             // Assuming bookData.data.attributes.publication_day is in the format "yyyy-MM-ddTHH:mm:ss.000000Z"
             const defaultDate = bookData.data.attributes.publication_day;
 
@@ -102,6 +109,15 @@ const FormBookUpdate = () => {
         e.preventDefault()
         await handleUpdateBook(id)
     }
+
+    const handleAuthorChange = (selectedAuthors) => {
+        setAuthorSelected(selectedAuthors);
+    };
+
+    const authorOptions = authors.map((author) => ({
+        value: author.id,
+        label: author.attributes.name,
+    }));
 
     const handleUploadImage = async () => {
         try {
@@ -302,38 +318,17 @@ const FormBookUpdate = () => {
                     </select>
                 </div>
                 <div className='mb-6'>
-                    <label htmlFor="Author" className="block mb-2 text-sm font-medium text-gray-900 
-                    dark:text-white">
-                        Tác giả</label>
-                    <select
+                    <label htmlFor="Author" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Tác giả
+                    </label>
+                    <Select
                         id="multiSelection"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 
-                    dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
-                    dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        onChange={(e) => {
-                            const selectedValue = e.target.value;
-                            if (authorSelected.includes(selectedValue)) {
-                                // Remove the author if already selected
-                                setAuthorSelected(prevAuthors => prevAuthors.filter(author => author !== selectedValue));
-                            } else {
-                                // Add the author if not selected
-                                setAuthorSelected(prevAuthors => [...prevAuthors, selectedValue]);
-                            }
-                        }}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        isMulti
+                        onChange={handleAuthorChange}
+                        options={authorOptions}
                         value={authorSelected}
-                        data-te-select-init
-                        multiple>
-                        {
-                            authors.map((cat) => (
-                                <option
-                                    key={cat.id}
-                                    value={cat.id}
-                                >
-                                    {cat.attributes.name}</option>
-                            ))
-                        }
-                    </select>
+                    />
                 </div>
                 <div className='mb-6'>
                     <label htmlFor="promotion" className="block mb-2 text-sm font-medium text-gray-900 

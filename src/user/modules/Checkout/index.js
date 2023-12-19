@@ -40,64 +40,106 @@ const Checkout = () => {
 
     const handleStoreOrder = async (e) => {
         e.preventDefault()
+        let redirectToPaymentExecuted = false;
 
-        if(payment === 'VN PAY') {
+        if (payment === 'VN PAY') {
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/process-payment', {
                     // Include any necessary payment data here
                     amount: total,
                     redirect: redirectToPayment,
                 });
-    
+
                 if (response.data.code === '00' && response.data.data.redirectUrl) {
                     if (redirectToPayment) {
-                        window.location.href = response.data.data.redirectUrl;
+                        window.location.href = response.data.data.redirectUrl
                     } else {
                         console.log('Payment URL:', response.data.data);
                         // Handle the URL as needed, e.g., open in a new tab
                     }
+                    redirectToPaymentExecuted = true
+
                 } else {
                     console.log('Response data:', response.data);
                     console.error('message', response.data.message);
                 }
+                if (redirectToPaymentExecuted) {
+                    // Continue with the second Axios request
+                    try {
+                        const orderResponse = await axios.post('http://127.0.0.1:8000/api/store-order', {
+                            user_id: user.id,
+                            phone: phone,
+                            address: address,
+                            total: total,
+                            payment: payment,
+                            order_details: orderDetails
+                        });
+                
+                        setEmail('');
+                        setName('');
+                        setAddress('');
+                        setPhone('');
+                        setPayment('');
+                        localStorage.removeItem('cart');
+                
+                        console.log('store-order', orderResponse.data);
+                        toast.success('Đặt đơn hàng thành công !!!!', {
+                            position: 'top-center',
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: 'light',
+                        });
+                        document.title = `Order Confirmation - Total: $${total.toFixed(2)}`;
+                        navigate('/cart');
+                    } catch (e) {
+                        console.error('Error during store-order:', e);
+                    }
+                }
+                
             } catch (error) {
                 console.error('Error during payment:', error);
             }
-        }
-
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/api/store-order', {
-                email: email,
-                phone: phone,
-                address: address,
-                total: total,
-                payment: payment,
-                order_details: orderDetails
-            })
-            setEmail('')
-            setName('')
-            setAddress('')
-            setPhone('')
-            setPayment('')
-            localStorage.removeItem('cart')
             
+        } else if (payment === 'Thanh toán khi nhận hàng') {
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/api/store-order', {
+                    user_id: user.id,
+                    phone: phone,
+                    address: address,
+                    total: total,
+                    payment: payment,
+                    order_details: orderDetails
+                })
+                setEmail('')
+                setName('')
+                setAddress('')
+                setPhone('')
+                setPayment('')
+                localStorage.removeItem('cart')
 
-            console.log("store-order", response.data)
-            toast.success('Đặt đơn hàng thành công !!!!', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-            document.title = `Order Confirmation - Total: $${total.toFixed(2)}`;
-            navigate('/cart')
-        } catch (e) {
-            console.error('error: ', e.message)
+
+                console.log("store-order", response.data)
+                toast.success('Đặt đơn hàng thành công !!!!', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                document.title = `Order Confirmation - Total: $${total.toFixed(2)}`;
+                navigate('/cart')
+            } catch (e) {
+                console.error('error: ', e.message)
+            }
         }
+       
     }
 
 

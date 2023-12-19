@@ -59,19 +59,17 @@ const Product = () => {
                 console.error('Error checking wishlist:', error);
             }
         };
-
-        
-
         fetchProduct()
         checkWishlist();
     }, [id])
 
     const IncreaseAmount = (prev) => {
-        setAmount(prev + 1)
+        if (prev < product.attributes.quantity)
+            setAmount(prev + 1)
     }
 
     const DecreaseAmount = (prev) => {
-        if (prev > 0)
+        if (prev > 1)
             setAmount(prev - 1)
     }
 
@@ -120,16 +118,23 @@ const Product = () => {
         console.log(product)
         const cart = JSON.parse(localStorage.getItem('cart')) || []
         const isProductExist = cart.find(item => item.id === product.id)
+        if (amount > product.attributes.quantity) {
+            toast('Đặt quá số lượng sách')
+        }
         if (isProductExist) {
             const updateCart = cart.map(item => {
                 if (item.id === product.id) {
-                    return {
-                        ...item,
-                        quantity: item.quantity + 1
+                    if ((item.quantity + amount) > product.attributes.quantity) {
+                        toast('Đặt quá số lượng sách')
+                    } else {
+                        toast('Sản phẩm đã thêm vào giỏ hàng')
+                        return {
+                            ...item,
+                            quantity: item.quantity + amount
+                        }
                     }
                 }
                 return item
-
             })
             updateCart.forEach(item => {
                 const originalPrice = item.attributes.price;
@@ -140,9 +145,9 @@ const Product = () => {
         } else {
             const discountedPrice = product.attributes.price - product.attributes.price * product.attributes.promotion.discount;
             localStorage.setItem('cart', JSON.stringify([...cart, { ...product, quantity: amount, price: discountedPrice }]));
+            toast('Sản phẩm đã thêm vào giỏ hàng')
         }
         setAmount(1)
-        alert('product add to cart')
         if (redirect) {
             navigate('/cart')
         }
@@ -172,7 +177,7 @@ const Product = () => {
                 console.error('Error:', error.message);
             }
         } else {
-            toast.error('Bạn phải đăng nhập mới yêu thích được',{
+            toast.error('Bạn phải đăng nhập mới yêu thích được', {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: true,
@@ -320,7 +325,7 @@ const Product = () => {
                 </div>
 
             </div>
-            
+
         </section>
     )
 }

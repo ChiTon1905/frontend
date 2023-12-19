@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useUser } from '../../../Contexts/UserContext'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useNavigate,useParams } from 'react-router-dom';
 
-const UserInfo = () => {
+const FormUserUpdate = () => {
 
     const navigate = useNavigate();
+    const { id } = useParams()
 
     const {
         name,
@@ -32,60 +32,38 @@ const UserInfo = () => {
         isValidPasswordConfirmation,
         isValidPhone,
         genre,
-        setGenre
+        setGenre,
+        handleUpdateUser
     } = useUser()
 
     console.log('name', name)
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
+    const fetchUserShow = async () => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/users/${id}`)
+            const user = response.data.data
+            console.log('user', user)
             setName(user.name);
             setAddress(user.address);
             setPhone(user.phone);
-            setEmail(user.email);    
-        }
+            setEmail(user.email);
+            setGenre(user.genre);    
 
-        document.title = 'User info';
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(() => {
+        fetchUserShow()
+
+        document.title = 'User Update';
       }, []);
 
     
-    const handleUpdateUser = async (e) => {
+    const handleUpdate = async (e) => {
         e.preventDefault();
-        if (!isValidEmail) {
-            alert('Invalid email address');
-            return;
-        }
-        if (!isValidName) {
-            alert('Invalid name');
-            return;
-        }
-        
-        if (!isValidPhone) {
-            alert('Invalid phone');
-            return;
-        }
-
-        if(address === ''){
-            alert('Invalid address');
-            return;
-        }
-
-        axios.post(`http://127.0.0.1:8000/api/users/${user.id}`, {
-            name: name,
-            email: email,
-            address: address,
-            phone: phone,
-            genre: genre
-        })
-            .then(response => {
-                console.log('update user',response.data);
-                navigate('/userinfo')
-                toast.success('Thay doi thanh cong')
-            })
-            .catch(error => {
-                console.error(error.response.data);
-            });
+        await handleUpdateUser(id)
     };
 
     return (
@@ -188,7 +166,7 @@ const UserInfo = () => {
                     <div className='mb-4 mr-5 '>
                         <button
                             type="button"
-                            onClick={ handleUpdateUser }
+                            onClick={ handleUpdate }
                             className=" text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none 
                     focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 
                     text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 uppercase">
@@ -201,4 +179,4 @@ const UserInfo = () => {
     )
 }
 
-export default UserInfo
+export default FormUserUpdate

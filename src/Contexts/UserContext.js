@@ -28,6 +28,9 @@ export const UserContextProvider = ({ children }) => {
     const [isValidPasswordConfirmation, setIsPasswordConfirmation] = useState(true);
     const [isValidPhone, setIsValidPhone] = useState(true);
 
+    const [employee, setEmployee] = useState([])
+    const [filterData, setFilterData] = useState([])
+
     const navigate = useNavigate();
     // Real-time validation
     const validateName = (name) => {
@@ -136,7 +139,7 @@ export const UserContextProvider = ({ children }) => {
                     progress: undefined,
                     theme: "light",
                 });
-               
+
             })
             .catch(error => {
                 console.error(error.message);
@@ -202,11 +205,12 @@ export const UserContextProvider = ({ children }) => {
     useEffect(() => {
         console.log("User object:", user);
         console.log("User roles:", user ? user.roles : null);
-      
-    
+
+
         if (user && user.roles && user.roles.length > 0) {
             const isAdmin = user.roles.some(role => role.name === 'admin');
-            if (isAdmin) {
+            const isEmployee = user.roles.some(role => role.name === 'employee');
+            if (isAdmin || isEmployee) {
                 console.log("Navigating to /admin");
                 navigate('/admin');
             } else {
@@ -214,13 +218,13 @@ export const UserContextProvider = ({ children }) => {
                 navigate('/');
             }
         } else if (user && (!user.roles || user.roles.length === 0)) {
-           
+
             console.log("User has no roles");
-            
+
             navigate('/');
         } else {
             console.log("User or roles information is missing");
-            
+
         }
     }, [user]);
 
@@ -235,8 +239,118 @@ export const UserContextProvider = ({ children }) => {
                 console.error('Error parsing user data:', error);
             }
         }
-    }, []); 
+    }, []);
 
+    const fetchEmployee = async () => {
+        try {
+          const respone = await axios.get('http://127.0.0.1:8000/api/employee')
+            .then(response => {
+              console.log(response.data)
+              setEmployee(response.data.users)
+              setFilterData(response.data.users)
+            })
+        } catch (error) {
+          console.error('error fetching', error)
+        }
+      }
+    
+
+    const handleCreateUser = async (e) => {
+
+        e.preventDefault();
+        if (!isValidEmail) {
+            toast.error('Invalid email address');
+            return;
+        }
+        if (!isValidName) {
+            toast.error('Invalid name');
+            return;
+        }
+
+        if (!isValidPassword) {
+            toast.error('Invalid password');
+            return;
+        }
+
+        await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie")
+
+        axios.post('http://127.0.0.1:8000/api/users/store', {
+            name: name,
+            email: email,
+            password: password,
+            password_confirmation: passwordConfirmation
+        })
+            .then(response => {
+                console.log(response.data, 'create user');
+                setName('')
+                setEmail('')
+                setPassword('')
+                setPasswordConfirmation('')
+                toast.success('Tạo user thành công')
+                navigate('/admin/employees')
+            })
+            .catch(error => {
+                console.error(error.response.data);
+            });
+    };
+
+    const handleUpdateUser = async (id) => {
+
+        if (!isValidEmail) {
+            toast.error('Invalid email address');
+            return;
+        }
+        if (!isValidName) {
+            toast.error('Invalid name');
+            return;
+        }
+
+        if (!isValidPassword) {
+            toast.error('Invalid password');
+            return;
+        }
+
+        await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie")
+
+        axios.post(`http://127.0.0.1:8000/api/users/${id}`, {
+            name: name,
+            email: email,
+            genre: genre,
+            address: address,
+            phone: phone
+        })
+            .then(response => {
+                console.log(response.data, 'update user');
+                setName('')
+                setEmail('')
+                setPassword('')
+                setPasswordConfirmation('')
+                setAddress('')
+                setGenre('')
+                setPhone('')
+                toast.success('Cập nhật thành công')
+                navigate('/admin/employees')
+            })
+            .catch(error => {
+                console.error(error.response.data);
+                toast.error('Lỗi cập nhật')
+            });
+    };
+
+    const handleDeleteEmployees = async (id) => {
+        try {
+            const response = await axios.post(`http://127.0.0.1:8000/api/users/delete/${id}`);
+            if (response.status === 204) {
+                setEmployee(prevEmployee => prevEmployee.filter(Employee => Employee.id !== id));
+                toast.success('Thành công !!!!');
+            }
+            fetchEmployee()
+        } catch (error) {
+            console.error('Error deleting Publisher:', error);
+            toast.error('Error ');
+        }
+    }
+    
 
     return (
         <userContext.Provider
@@ -273,9 +387,17 @@ export const UserContextProvider = ({ children }) => {
                 handlePhoneChange,
                 handleAddressChange,
                 genre,
-                setGenre
-
-
+                setGenre,
+                handleCreateUser,
+                handleUpdateUser,
+                fetchEmployee,
+                employee, 
+                setEmployee,
+                filterData, 
+                setFilterData,
+                handleDeleteEmployees ,
+                
+                
             }}
 
         >
