@@ -263,10 +263,10 @@ const Checkout = () => {
                                 {cart?.quantity}
                             </div>
                             <span className="text-center w-1/5 font-semibold text-sm">
-                                {cart.price} đ
+                            {new Intl.NumberFormat('en-US').format(cart.price)} đ
                             </span>
                             <span className="text-center w-1/5 font-semibold text-sm">
-                                {cart.price * cart?.quantity} đ
+                            {new Intl.NumberFormat('en-US').format(cart.price * cart?.quantity)}đ
                             </span>
                         </div>
                     )
@@ -276,7 +276,7 @@ const Checkout = () => {
             </div>
             <div className='border rounded-lg mr-5 ml-5 mt-5 mb-5 grid justify-items-end'>
                 <div className='mb-4 mr-5 mt-5 '>
-                    Tổng tiền hàng : {total?.toFixed(0)} đ
+                    Tổng tiền hàng :  {new Intl.NumberFormat('en-US').format(total.toFixed(0))} đ
                 </div>
                 <div className='mb-4 mr-5'>
                     <button

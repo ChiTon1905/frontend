@@ -84,9 +84,9 @@ const OrderHistoryDetail = () => {
                                             </div>
                                         </div>
                                         <div className="flex justify-between space-x-8 items-start w-full">
-                                            <p className="text-base dark:text-white xl:text-lg leading-6">{orderData.price} đ<span className="text-red-300 line-through"> {orderData.book.price} đ</span></p>
+                                            <p className="text-base dark:text-white xl:text-lg leading-6"> {new Intl.NumberFormat('en-US').format(orderData.price)} đ<span className="text-red-300 line-through">{new Intl.NumberFormat('en-US').format(orderData.book.price)} đ đ</span></p>
                                             <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">{orderData.quantity}</p>
-                                            <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">{orderData.price * orderData.quantity} đ</p>
+                                            <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">{new Intl.NumberFormat('en-US').format(orderData.price * orderData.quantity)} đ</p>
                                         </div>
                                     </div>
                                 </div>

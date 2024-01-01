@@ -77,7 +77,11 @@ const Customer = () => {
       cell: (row) => {
         const handleLockClick = async () => {
           try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/users/${row.id}/lock`);
+            const response = await axios.post(`http://127.0.0.1:8000/api/users/${row.id}/lock`, {}, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+            });
             fetchOrder()
             toast(response.data.message);
           } catch (error) {
@@ -88,7 +92,11 @@ const Customer = () => {
 
         const handleUnLockClick = async () => {
           try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/users/${row.id}/unlock`);
+            const response = await axios.post(`http://127.0.0.1:8000/api/users/${row.id}/unlock`, {}, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+            });
             fetchOrder()
             toast(response.data.message);
           } catch (error) {

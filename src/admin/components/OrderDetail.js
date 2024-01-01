@@ -83,7 +83,7 @@ const OrderDetail = () => {
                                     {orderData.quantity}
                                 </td>
                                 <td className="px-6 py-4">
-                                    {`${orderData.price}đ`}
+                                {new Intl.NumberFormat('en-US').format(orderData.price)} đ
                                 </td>
                             </tr>
                         ))}
@@ -91,7 +91,7 @@ const OrderDetail = () => {
                 </table>
             </div>
             <div className="flex justify-start item-start space-y-2 flex-col mt-5">
-                <p1 className="text-xl dark:text-white lg:text-2xl font-semibold leading-7 lg:leading-9 text-gray-800">Tổng thành tiền: {order.total}đ</p1>
+                <p1 className="text-xl dark:text-white lg:text-2xl font-semibold leading-7 lg:leading-9 text-gray-800">Tổng thành tiền: {new Intl.NumberFormat('en-US').format(order.total)} đ</p1>
             </div>
 
         </div>

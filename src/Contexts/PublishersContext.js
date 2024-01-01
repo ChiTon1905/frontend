@@ -37,6 +37,10 @@ export const PublishersContextProvider = ({ children }) => {
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/publishers/store', {
                     name: name
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
                 });
                 toast.success('Thành công !!!!', {
                     position: "top-center",
@@ -59,6 +63,10 @@ export const PublishersContextProvider = ({ children }) => {
             try {
                 const response = await axios.post(`http://127.0.0.1:8000/api/publishers/${id}`, {
                     name: name
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
                 });
                 toast.success('Thành công !!!!', {
                     position: "top-center",
@@ -79,7 +87,12 @@ export const PublishersContextProvider = ({ children }) => {
     
         const deletePublisher = async (id) => {
             try {
-                const response = await axios.post(`http://127.0.0.1:8000/api/publishers/delete/${id}`);
+                const response = await axios.post(`http://127.0.0.1:8000/api/publishers/delete/${id}` , {}
+                , {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 if (response.status === 204) {
                     setPublishers(prevPublishers => prevPublishers.filter(Publisher => Publisher.id !== id));
                     toast.success('Thành công !!!!', {

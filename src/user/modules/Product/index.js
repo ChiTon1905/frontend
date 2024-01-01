@@ -275,12 +275,12 @@ const Product = () => {
                         {product.attributes.description}</p>
                     <div className="flex flex-nowrap justify-start items-center">
                         <div className="title-font font-medium text-base text-gray-900 line-through mr-5">
-                            {product.attributes.price} d
+                            {new Intl.NumberFormat('en-US').format(product.attributes.price)}
+                            đ
                         </div>
                         <div className="title-font font-medium text-2xl text-red-500 mr-40">
-                            {
-                                product.attributes.price - product.attributes.price * product.attributes.promotion.discount
-                            } d
+                            {new Intl.NumberFormat('en-US').format(product.attributes.price - (product.attributes.price * product.attributes.promotion.discount))}
+                            đ
                             &nbsp;
                             -
                             {

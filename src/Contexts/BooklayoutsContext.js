@@ -37,6 +37,10 @@ export const BooklayoutsContextProvider = ({ children }) => {
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/booklayouts/store', {
                     name: name
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
                 });
                 toast.success('Thành công !!!!', {
                     position: "top-center",
@@ -59,6 +63,10 @@ export const BooklayoutsContextProvider = ({ children }) => {
             try {
                 const response = await axios.post(`http://127.0.0.1:8000/api/booklayouts/${id}`, {
                     name: name
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
                 });
                 toast.success('Thành công !!!!', {
                     position: "top-center",
@@ -79,7 +87,12 @@ export const BooklayoutsContextProvider = ({ children }) => {
     
         const deleteBooklayout = async (id) => {
             try {
-                const response = await axios.post(`http://127.0.0.1:8000/api/booklayouts/delete/${id}`);
+                const response = await axios.post(`http://127.0.0.1:8000/api/booklayouts/delete/${id}`, {}
+                , {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 if (response.status === 204) {
                     setBooklayouts(prevbooklayouts => prevbooklayouts.filter(Booklayout => Booklayout.id !== id));
                     toast.success('Thành công !!!!', {

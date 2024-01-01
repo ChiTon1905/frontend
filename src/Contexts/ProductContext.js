@@ -114,7 +114,11 @@ export const ProductContextProvider = ({ children }) => {
         formData.append(`image_path[${index}]`, file);
       });
 
-      const response = await axios.post('http://127.0.0.1:8000/api/books/store', formData);
+      const response = await axios.post('http://127.0.0.1:8000/api/books/store', formData, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
 
       toast.success("Thêm sách thành công")
 
@@ -156,7 +160,11 @@ export const ProductContextProvider = ({ children }) => {
       };
 
       // Assuming 'id' is available in your component
-      const response = await axios.post(`http://127.0.0.1:8000/api/books/${id}`, updatedBookData);
+      const response = await axios.post(`http://127.0.0.1:8000/api/books/${id}`, updatedBookData, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
 
       console.log('Updated book data:', response.data);
       fetchProductsTable()
@@ -185,7 +193,11 @@ export const ProductContextProvider = ({ children }) => {
 
   const deleteBook = async (id) => {
     try {
-      const response = await axios.post(`http://127.0.0.1:8000/api/books/delete/${id}`);
+      const response = await axios.post(`http://127.0.0.1:8000/api/books/delete/${id}` , {} , {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
       if (response.status === 204) {
         setProductsData(prev => prev.filter(productsData => productsData.id !== id));
         toast.success('Thành công !!!!', {

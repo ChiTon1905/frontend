@@ -36,6 +36,10 @@ export const LanguagesContextProvider = ({ children }) => {
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/languages/store', {
                     name: name
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
                 });
                 toast.success('Thành công !!!!', {
                     position: "top-center",
@@ -58,6 +62,10 @@ export const LanguagesContextProvider = ({ children }) => {
             try {
                 const response = await axios.post(`http://127.0.0.1:8000/api/languages/${id}`, {
                     name: name
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
                 });
                 toast.success('Thành công !!!!', {
                     position: "top-center",
@@ -78,7 +86,12 @@ export const LanguagesContextProvider = ({ children }) => {
     
         const deleteLanguage = async (id) => {
             try {
-                const response = await axios.post(`http://127.0.0.1:8000/api/languages/delete/${id}`);
+                const response = await axios.post(`http://127.0.0.1:8000/api/languages/delete/${id}`, {}
+                , {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 if (response.status === 204) {
                     setLanguages(prevLanguages => prevLanguages.filter(Language => Language.id !== id));
                     toast.success('Thành công !!!!', {

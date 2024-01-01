@@ -151,7 +151,7 @@ const OrderHistory = () => {
                                     {order.status}
                                 </td>
                                 <td className="px-6 py-4">
-                                    {order.total}
+                                {new Intl.NumberFormat('en-US').format(order.total)} đ
                                 </td>
                                 <td className="px-6 py-4">
                                     {order.payment}

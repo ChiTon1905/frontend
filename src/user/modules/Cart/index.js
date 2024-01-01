@@ -118,8 +118,9 @@ const Cart = () => {
                       <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                     </svg>
                   </div>
-                  <span className="text-center w-1/5 font-semibold text-sm">{cart.price} đ</span>
-                  <span className="text-center w-1/5 font-semibold text-sm">{cart.price * cart?.quantity} đ</span>
+                  <span className="text-center w-1/5 font-semibold text-sm">
+                  {new Intl.NumberFormat('en-US').format(cart.price)}đ</span>
+                  <span className="text-center w-1/5 font-semibold text-sm">{new Intl.NumberFormat('en-US').format(cart.price * cart?.quantity)}đ</span>
                 </div>
               )
             })
@@ -134,7 +135,7 @@ const Cart = () => {
           <h1 className="font-semibold text-2xl border-b pb-8">Tóm tắt đơn hàng</h1>
           <div className="flex justify-between mt-10 mb-5">
             <span className="font-semibold text-sm uppercase">Sản phẩm {carts?.length}</span>
-            <span className="font-semibold text-sm">{total?.toFixed(0)} đ</span>
+            <span className="font-semibold text-sm">{new Intl.NumberFormat('en-US').format(total.toFixed(0))}đ</span>
           </div>
           <div>
             <label className="font-medium inline-block mb-3 text-sm uppercase">Giao hàng</label>
@@ -145,7 +146,7 @@ const Cart = () => {
           <div className="border-t mt-8">
             <div className="flex font-semibold justify-between py-6 text-sm uppercase">
               <span>Tổng thành tiền</span>
-              <span>${(total).toFixed(0)}</span>
+              <span>{new Intl.NumberFormat('en-US').format(total.toFixed(0))}đ</span>
             </div>
             <button
               onClick={handleCheckout}

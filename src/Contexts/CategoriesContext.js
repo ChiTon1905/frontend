@@ -36,6 +36,10 @@ export const CategoryContextProvider = ({ children }) => {
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/categories/store', {
                 name: name
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
             });
             toast.success('Thành công !!!!', {
                 position: "top-center",
@@ -58,6 +62,10 @@ export const CategoryContextProvider = ({ children }) => {
         try {
             const response = await axios.post(`http://127.0.0.1:8000/api/categories/${id}`, {
                 name: name
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
             });
             toast.success('Thành công !!!!', {
                 position: "top-center",
@@ -78,7 +86,12 @@ export const CategoryContextProvider = ({ children }) => {
 
     const deleteCategory = async (id) => {
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/categories/delete/${id}`);
+            const response = await axios.post(`http://127.0.0.1:8000/api/categories/delete/${id}`, {}
+            , {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             if (response.status === 204) {
                 setCategory(prevCategories => prevCategories.filter(category => category.id !== id));
                 toast.success('Thành công !!!!', {
@@ -92,7 +105,7 @@ export const CategoryContextProvider = ({ children }) => {
                     theme: "light",
                 });
             }
-            window.location.reload()
+            fetchCategories()
         } catch (error) {
             console.error('Error deleting category:', error);
             toast.error('Đã có sách ở thể loại này', {

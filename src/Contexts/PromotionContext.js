@@ -70,6 +70,10 @@ export const PromotionsContextProvider = ({ children }) => {
                 end_date: formattedEndDate,
                 discount: (discount / 100) ,
                 description: description
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
             });
             toast.success('Thành công !!!!', {
                 position: "top-center",
@@ -101,6 +105,10 @@ export const PromotionsContextProvider = ({ children }) => {
                 start_date: startDate,
                 end_date: endDate,
                 description: description
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
             });
             toast.success('Thành công !!!!', {
                 position: "top-center",
@@ -121,7 +129,11 @@ export const PromotionsContextProvider = ({ children }) => {
 
     const deletePromotion = async (id) => {
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/promotions/delete/${id}`);
+            const response = await axios.post(`http://127.0.0.1:8000/api/promotions/delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             if (response.status === 204) {
                 setPromotions(prevPromotions => prevPromotions.filter(Promotion => Promotion.id !== id));
                 toast.success('Thành công !!!!', {

@@ -59,7 +59,7 @@ const Orders = () => {
     },
     {
       name: 'total',
-      selector: (row) => row.total,
+      selector: (row) => <span>{new Intl.NumberFormat('en-US').format(row.total)}VND</span>,
       sortable: true,
     },
     {
