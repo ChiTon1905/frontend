@@ -63,6 +63,7 @@ const OrderHistoryDetail = () => {
             <div className="flex justify-start item-start space-y-2 flex-col">
                 <h1 className="text-3xl dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">Đơn hàng {order.order_code} </h1>
                 <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600"> {formatDate(order.date)} </p>
+                <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600">Trạng thái: {order.status} </p>
             </div>
             <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
                 <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
@@ -84,7 +85,7 @@ const OrderHistoryDetail = () => {
                                             </div>
                                         </div>
                                         <div className="flex justify-between space-x-8 items-start w-full">
-                                            <p className="text-base dark:text-white xl:text-lg leading-6"> {new Intl.NumberFormat('en-US').format(orderData.price)} đ<span className="text-red-300 line-through">{new Intl.NumberFormat('en-US').format(orderData.book.price)} đ đ</span></p>
+                                            <p className="text-base dark:text-white xl:text-lg leading-6"> {new Intl.NumberFormat('en-US').format(orderData.price)} đ<span className="text-red-300 line-through">{new Intl.NumberFormat('en-US').format(orderData.book.price)} đ</span></p>
                                             <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">{orderData.quantity}</p>
                                             <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">{new Intl.NumberFormat('en-US').format(orderData.price * orderData.quantity)} đ</p>
                                         </div>
@@ -99,12 +100,12 @@ const OrderHistoryDetail = () => {
                             <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
                                 <div className="flex justify-between w-full">
                                     <p className="text-base dark:text-white leading-4 text-gray-800">Thành tiền</p>
-                                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{total} đ</p>
+                                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{new Intl.NumberFormat('en-US').format(total)} đ</p>
                                 </div>
                             </div>
                             <div className="flex justify-between items-center w-full">
                                 <p className="text-base dark:text-white font-semibold leading-4 text-gray-800">Tổng cộng</p>
-                                <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">{total} đ</p>
+                                <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">{new Intl.NumberFormat('en-US').format(total)} đ</p>
                             </div>
                         </div>
                     </div>
@@ -124,8 +125,10 @@ const OrderHistoryDetail = () => {
                         <div className="flex justify-between xl:h-full items-stretch w-full flex-col mt-6 md:mt-0">
                             <div className="flex justify-center md:justify-start xl:flex-col flex-col md:space-x-6 lg:space-x-8 xl:space-x-0 space-y-4 xl:space-y-12 md:space-y-0 md:flex-row items-center md:items-start">
                                 <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4 xl:mt-8">
-                                    <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">Nơi đặt hàng</p>
-                                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{user.address}</p>
+                                    <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">Người nhận</p>
+                                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{order.receiver} - {order.email_receiver}</p>
+                                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">Nơi nhận: {order.address_receiver}</p>
+                                    <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">SĐT: {order.phone_receiver}</p>
                                 </div>
                             </div>
                         </div>

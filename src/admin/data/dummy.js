@@ -1,7 +1,7 @@
 import React from 'react';
 import { AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock } from 'react-icons/ai';
 import { FiShoppingBag, FiPieChart, FiBarChart, } from 'react-icons/fi';
-import {BsBarChart, BsBoxSeam,} from 'react-icons/bs';
+import {BsBoxSeam} from 'react-icons/bs';
 import { IoMdContacts } from 'react-icons/io';
 import { RiContactsLine, RiStockLine } from 'react-icons/ri';
 import { MdOutlineSupervisorAccount } from 'react-icons/md';

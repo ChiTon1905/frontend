@@ -112,7 +112,7 @@ export const UserContextProvider = ({ children }) => {
         e.preventDefault();
         await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie")
 
-        axios.post('http://127.0.0.1:8000/api/login', {
+        const respone = axios.post('http://127.0.0.1:8000/api/login', {
             email: email,
             password: password
         })
@@ -139,11 +139,13 @@ export const UserContextProvider = ({ children }) => {
                     progress: undefined,
                     theme: "light",
                 });
-
             })
             .catch(error => {
                 console.error(error.message);
+                toast.error(error.response.data.message)
             });
+
+
 
     };
 
@@ -243,17 +245,17 @@ export const UserContextProvider = ({ children }) => {
 
     const fetchEmployee = async () => {
         try {
-          const respone = await axios.get('http://127.0.0.1:8000/api/employee')
-            .then(response => {
-              console.log(response.data)
-              setEmployee(response.data.users)
-              setFilterData(response.data.users)
-            })
+            const respone = await axios.get('http://127.0.0.1:8000/api/employee')
+                .then(response => {
+                    console.log(response.data)
+                    setEmployee(response.data.users)
+                    setFilterData(response.data.users)
+                })
         } catch (error) {
-          console.error('error fetching', error)
+            console.error('error fetching', error)
         }
-      }
-    
+    }
+
 
     const handleCreateUser = async (e) => {
 
@@ -350,7 +352,7 @@ export const UserContextProvider = ({ children }) => {
             toast.error('Error ');
         }
     }
-    
+
 
     return (
         <userContext.Provider
@@ -391,13 +393,13 @@ export const UserContextProvider = ({ children }) => {
                 handleCreateUser,
                 handleUpdateUser,
                 fetchEmployee,
-                employee, 
+                employee,
                 setEmployee,
-                filterData, 
+                filterData,
                 setFilterData,
-                handleDeleteEmployees ,
-                
-                
+                handleDeleteEmployees,
+
+
             }}
 
         >

@@ -113,18 +113,39 @@ const Orders = () => {
             });
         }
 
+        const handleBoom = (row) => {
+          axios.post(`http://127.0.0.1:8000/api/order/boom-order/${row.id}`)
+            .then(response => {
+              console.log(response);
+              if (response.data && response.data.message) {
+                toast.success(response.data.message);
+                fetchOrder();
+              } else {
+                toast.error('Invalid response from the server');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              if (error.response && error.response.data && error.response.data.message) {
+                toast.error(error.response.data.message);
+              } else {
+                toast.error('An error occurred while pending the order.');
+              }
+            });
+        }
+
         const handleShow = () => {
           navigate(`/admin/orderdetail/${row.id}`);
         }
         return (
-          <div className="flex items-center">
+          <div className="flex flex-col justify-center items-start">
             <button
               type="button"
               onClick={handleShow}
               className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none 
               focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 
               dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 
-              uppercase whitespace-nowrap"
+              uppercase whitespace-nowrap mb-2"
             >
               Hiển thị
             </button>
@@ -134,7 +155,7 @@ const Orders = () => {
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none 
               focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 
               dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 
-              uppercase whitespace-nowrap ml-2"
+              uppercase whitespace-nowrap mb-2"
             >
               Xác nhận
             </button>
@@ -144,9 +165,19 @@ const Orders = () => {
               className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none 
               focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 
               dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 
-              uppercase whitespace-nowrap ml-2"
+              uppercase whitespace-nowrap mb-2"
             >
               Chưa xác nhận
+            </button>
+            <button
+              type="button"
+              onClick={() => handleBoom(row)}
+              className="text-white bg-amber-700 hover:bg-amber-800 focus:ring-4 focus:outline-none 
+              focus:ring-yellow-300 font-medium rounded-lg text-sm px-4 py-2 
+              dark:bg-amber-600 dark:hover:bg-amber-700 dark:focus:ring-amber-800 
+              uppercase whitespace-nowrap mb-2"
+            >
+              Bùng hàng
             </button>
           </div>
         )
