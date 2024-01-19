@@ -89,11 +89,11 @@ const Navbar = () => {
                     aria-labelledby="options-menu"
                   >
                     <Link
-                      to="/userinfo"
+                      to="#"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-500"
                       role="menuitem"
                     >
-                      User Info
+                      Thông tin người dùng
                     </Link>
                     <Link
                       to="/login"
@@ -101,7 +101,7 @@ const Navbar = () => {
                       role="menuitem"
                       onClick={handleLogout}
                     >
-                      Logout
+                      Đăng xuất
                     </Link>
                   </div>
                 </div>

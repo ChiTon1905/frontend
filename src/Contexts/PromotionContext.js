@@ -59,6 +59,23 @@ export const PromotionsContextProvider = ({ children }) => {
     }
     const createPromotion = async () => {
         const formData = new FormData();
+
+        // Chuyển đổi ngày bắt đầu và ngày kết thúc thành đối tượng Date
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+
+        // Kiểm tra xem ngày bắt đầu có lớn hơn ngày hiện tại hay không
+        if (startDateObj < new Date()) {
+            toast.error('Ngày bắt đầu không thể là ngày quá khứ');
+            return;
+        }
+
+        // Kiểm tra xem ngày kết thúc có lớn hơn ngày bắt đầu hay không
+        if (endDateObj <= startDateObj) {
+            toast.error('Ngày kết thúc phải lớn hơn ngày bắt đầu');
+            return;
+        }
+
         const formattedStartDate = new Date(startDate).toISOString().split('T')[0];
 
         const formattedEndDate = new Date(endDate).toISOString().split('T')[0];
@@ -68,23 +85,14 @@ export const PromotionsContextProvider = ({ children }) => {
                 name: name,
                 start_date: formattedStartDate,
                 end_date: formattedEndDate,
-                discount: (discount / 100) ,
+                discount: (discount / 100),
                 description: description
             }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             });
-            toast.success('Thành công !!!!', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.success('Thành công !!!!');
             fetchPromotions()
 
             setName('')
@@ -92,13 +100,34 @@ export const PromotionsContextProvider = ({ children }) => {
             setEndDate('')
             setDescription('')
             setDiscount('')
-            navigate('/admin/Promotion')
+            navigate('/admin/promotion')
         } catch (error) {
             console.error('Error creating Promotion:', error);
+            toast.error(error)
         }
     };
 
     const updatePromotion = async (id) => {
+        // Chuyển đổi ngày bắt đầu và ngày kết thúc thành đối tượng Date
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+
+        // Thêm 14 ngày vào ngày bắt đầu
+        const startDatePlus14Days = new Date(startDateObj);
+        startDatePlus14Days.setDate(startDatePlus14Days.getDate() + 14);
+
+        // Kiểm tra xem ngày bắt đầu có lớn hơn ngày hiện tại hay không
+        if (startDateObj < new Date()) {
+            toast.error('Ngày bắt đầu không thể là ngày quá khứ');
+            return;
+        }
+
+        // Kiểm tra xem ngày kết thúc có lớn hơn ngày bắt đầu 14 ngày hay không
+        if (endDateObj <= startDatePlus14Days) {
+            toast.error('Ngày kết thúc phải lớn hơn ngày bắt đầu ít nhất 14 ngày');
+            return;
+        }
+
         try {
             const response = await axios.post(`http://127.0.0.1:8000/api/promotions/${id}`, {
                 name: name,

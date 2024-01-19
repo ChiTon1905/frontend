@@ -18,6 +18,9 @@ const ProductsCard = ({ products = []}) => {
                                     <div className="mt-4">
                                         <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1 uppercase">{product.attributes.category?.name}</h3>
                                         <h2 className="text-gray-900 title-font text-xl font-medium">{product.attributes.name}</h2>
+                                        <p className="mt-1 text-ellipsis font-semibold  line-through text-red-500 text-xs">
+                                        {new Intl.NumberFormat('en-US').format(product.attributes.price)}
+                                             đ</p>
                                         <p className="mt-1 text-ellipsis font-semibold">
                                         {new Intl.NumberFormat('en-US').format(product.attributes.price - (product.attributes.price * product.attributes.promotion.discount))}
                                              đ</p>

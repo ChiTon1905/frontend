@@ -88,6 +88,14 @@ export const ProductContextProvider = ({ children }) => {
 
   const handleCreateBook = async (e) => {
     e.preventDefault()
+    if(quantity < 1) {
+      toast.error("Số lượng phải > 0")
+      return;
+    }
+    if(price < 1) {
+      toast.error("Giá tiền phải > 0")
+      return;
+    }
     try {
       const formData = new FormData();
       const formattedDate = new Date(date).toISOString().split('T')[0];
@@ -144,6 +152,14 @@ export const ProductContextProvider = ({ children }) => {
   };
 
   const handleUpdateBook = async (id) => {
+    if(quantity < 1) {
+      toast.error("Số lượng phải > 0")
+      return;
+    }
+    if(price < 1) {
+      toast.error("Giá tiền phải > 0")
+      return;
+    }
     try {
       const updatedBookData = {
         name,

@@ -71,13 +71,12 @@ const Header = () => {
                 </Link>
                 <nav className="md:mr-auto ml-5 flex flex-wrap items-center text-base justify-center">
                     <Dropdown cats={category} />
-                    {
-                        navigations.map((navigation, index) => {
-                            return (
-                                <Link key={index} to={navigation.path} className="mr-5 hover:text-gray-900">{navigation.name}</Link>
-                            )
-                        })
-                    }
+                    <Link
+                        to='/search'
+                        className="mr-5 hover:text-gray-900"
+                    >
+                        Sản phẩm
+                    </Link>
                 </nav>
                 <div className="ml-5 flex w-[30%] items-center justify-between">
                     <input
@@ -129,21 +128,21 @@ const Header = () => {
                                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-500"
                                             role="menuitem"
                                         >
-                                            User Info
+                                            Thông tin người dùng
                                         </Link>
                                         <Link
                                             to="/orderhistory"
                                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-500"
                                             role="menuitem"
                                         >
-                                            Orders History
+                                            Quản lý đơn hàng
                                         </Link>
                                         <Link
                                             to="/wishlist"
                                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-500"
                                             role="menuitem"
                                         >
-                                            WishList
+                                            Danh sách yêu thích
                                         </Link>
                                         <Link
                                             to="/login"
@@ -151,7 +150,7 @@ const Header = () => {
                                             role="menuitem"
                                             onClick={handleLogout}
                                         >
-                                            Logout
+                                            Đăng xuất
                                         </Link>
 
                                     </div>
@@ -160,7 +159,7 @@ const Header = () => {
                         </div>
                     ) : (
                         <Link to='/login' className="inline-flex items-center py-2 px-3 text-xl hover:text-blue-500">
-                            Sign in
+                            Đăng nhập
                         </Link>
                     )
                 }

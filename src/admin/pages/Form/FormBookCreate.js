@@ -48,6 +48,38 @@ const FormBookCreate = () => {
     const { publishers, setPublishers } = usePublishers()
     const { promotions, setPromotions } = usePromotions()
 
+    const [errorQuantity, setErrorQuantity] = useState('')
+    const [errorPrice, setErrorPrice] = useState('')
+    const [isValidQuantity, setIsValidQuantity] = useState(true)
+    const [isValidPrice, setIsValidPrice] = useState(true)
+
+    const validateQuantity = (quantity) => {
+        return quantity >= 1
+    }
+
+    const validatePrice = (price) => {
+        return price >= 1
+    }
+
+    const handleQuantityChange = (e) => {
+        const newQuantity = e.target.value;
+        const isValidQuantity = validateQuantity(newQuantity);
+
+
+        setQuantity(newQuantity);
+        setIsValidQuantity(isValidQuantity)
+        setErrorQuantity('Lỗi số lượng')
+    }
+
+    const handlePriceChange = (e) => {
+        const newPrice = e.target.value;
+        const isValidPrice = validatePrice(newPrice)
+
+        setIsValidPrice(isValidPrice)
+        setPrice(newPrice)
+        setErrorPrice('Lỗi giá tiền')
+    }
+
     const handleAuthorChange = (selectedAuthors) => {
         setAuthorSelected(selectedAuthors);
     };
@@ -56,6 +88,9 @@ const FormBookCreate = () => {
         value: author.id,
         label: author.attributes.name,
     }));
+
+
+
 
     console.log('name', name)
     console.log('category selected', categorySelected)
@@ -233,25 +268,28 @@ const FormBookCreate = () => {
                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         Số lượng
                     </label>
-                    <input type="quantity" id="quantity" onChange={(e) => setQuantity(e.target.value)}
+                    <input type="quantity" id="quantity" onChange={(e) => handleQuantityChange(e)}
                         value={quantity}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm 
                         rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
                         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
                         dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Nhập số lượng" required />
+                    {!isValidQuantity && <p className='text-red-500 text-xs'>{errorQuantity}</p>}
                 </div>
                 <div className='mb-6'>
                     <label htmlFor="price"
                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         Giá
                     </label>
-                    <input type="price" id="price" onChange={(e) => setPrice(e.target.value)} value={price}
+                    <input type="price" id="price" onChange={(e) => handlePriceChange(e)} value={price}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm 
                         rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
                         dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
                         dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Nhập price" required />
+                    {!isValidPrice && <p className='text-red-500 text-xs'>{errorPrice}</p>}
+
                 </div>
                 <div className='mb-6'>
                     <label

@@ -245,16 +245,19 @@ export const UserContextProvider = ({ children }) => {
 
     const fetchEmployee = async () => {
         try {
-            const respone = await axios.get('http://127.0.0.1:8000/api/employee')
-                .then(response => {
-                    console.log(response.data)
-                    setEmployee(response.data.users)
-                    setFilterData(response.data.users)
-                })
+            const response = await axios.get('http://127.0.0.1:8000/api/employee', {
+                params: {
+                    user_id: user.id
+                }
+            });
+    
+            console.log(response.data);
+            setEmployee(response.data.users);
+            setFilterData(response.data.users);
         } catch (error) {
-            console.error('error fetching', error)
+            console.error('Error fetching', error);
         }
-    }
+    };
 
 
     const handleCreateUser = async (e) => {

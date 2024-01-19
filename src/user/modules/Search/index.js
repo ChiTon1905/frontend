@@ -150,7 +150,7 @@ const Search = () => {
             <section className='border border-gray-300 '>
                 <div className='flex justify-between items-center '>
                     <p className='ml-20 mr-20 mt-4 flex text-xl font-extrabold  dark:text-white text-slate-900'>
-                        Filter
+                        Sắp xếp theo
                     </p>
                 </div>
                 <hr className='mt-5 bg-gray-300'>
@@ -159,7 +159,7 @@ const Search = () => {
                     {/* cac bang the loai */}
                     <div className='flex flex-col '>
                         <p className='text-gray-400 m-3 mt-4 uppercase'>
-                            Category
+                            thể loại
                         </p>
                         {
                             category.map((cat) => (
@@ -184,7 +184,7 @@ const Search = () => {
                             ))
                         }
                         <p className='text-gray-400 m-3 mt-4 uppercase'>
-                            Authors
+                            tác giả
                         </p>
                         {
                             authors.map((author) => (
@@ -209,7 +209,7 @@ const Search = () => {
                             ))
                         }
                         <p className='text-gray-400 m-3 mt-4 uppercase'>
-                            Publishers
+                            nhà xuất bản
                         </p>
                         {
                             publishers.map((pub) => (
@@ -234,7 +234,7 @@ const Search = () => {
                             ))
                         }
                         <p className='text-gray-400 m-3 mt-4 uppercase'>
-                            Booklayouts
+                            bìa sách
                         </p>
                         {
                             booklayouts.map((pub) => (
@@ -259,7 +259,7 @@ const Search = () => {
                             ))
                         }
                         <p className='text-gray-400 m-3 mt-4 uppercase'>
-                            Language
+                            ngôn ngữ
                         </p>
                         {
                             languages.map((pub) => (
@@ -287,48 +287,49 @@ const Search = () => {
                 </div>
             </section>
             <div>
-                {
-                    books.length > 0 ?
-                        <section className="text-gray-600 body-font">
-                            <div className="container px-5 pt-5 pb-14 mx-auto">
-                                <div className="flex flex-wrap justify-between items-center w-full mb-20">
-                                    <h2 className="text-xl text-yellow-500 tracking-widest font-medium title-font uppercase mb-1">
-                                        Kết quả tìm kiếm - {totalCount}
-                                    </h2>
-                                    <div className="relative inline-block text-left">
-                                        <div>
-                                            <button
-                                                onClick={toggleDropdown}
-                                                className="inline-flex justify-center w-full px-4 py-2 mr-24 "
-                                            >
-                                                Sort By
-                                                <FaChevronDown className="ml-3 mt-1" />
-                                            </button>
-                                        </div>
-                                        {isOpen && (
 
-                                            < div className="origin-top-right absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                                <div
-                                                    className="py-1"
-                                                    role="menu"
-                                                    aria-orientation="vertical"
-                                                    aria-labelledby="options-menu"
-                                                >
-                                                    {sortOptions.map((option, index) => (
-                                                        <button
-                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                            role="menuitem"
-                                                            onClick={() => handleSortChange(option.sortBy, option.sortOrder)}
-                                                        >
-                                                            {option.label}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-
-                                        )}
-                                    </div>
+                <section className="text-gray-600 body-font ">
+                    <div className="container px-5 pt-5 pb-14  ">
+                        <div className="flex flex-wrap items-center w-full mb-20">
+                            <h2 className="text-xl text-yellow-500 tracking-widest font-medium title-font uppercase mb-1">
+                                Kết quả tìm kiếm - {totalCount}
+                            </h2>
+                            <div className="relative inline-block text-left ml-96">
+                                <div>
+                                    <button
+                                        onClick={toggleDropdown}
+                                        className="inline-flex justify-center w-full px-4 py-2 mr-72 "
+                                    >
+                                        Sort By
+                                        <FaChevronDown className="ml-3 mt-1" />
+                                    </button>
                                 </div>
+                                {isOpen && (
+
+                                    < div className="origin-top-right absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                        <div
+                                            className="py-1"
+                                            role="menu"
+                                            aria-orientation="vertical"
+                                            aria-labelledby="options-menu"
+                                        >
+                                            {sortOptions.map((option, index) => (
+                                                <button
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                    role="menuitem"
+                                                    onClick={() => handleSortChange(option.sortBy, option.sortOrder)}
+                                                >
+                                                    {option.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                )}
+                            </div>
+                        </div>
+                        {
+                            books.length > 0 ?
                                 <div className="flex flex-wrap -m-4">
                                     {
                                         books.map((books) => {
@@ -341,24 +342,27 @@ const Search = () => {
                                                     <div className="mt-4">
                                                         <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1 uppercase">{books.attributes.category?.name}</h3>
                                                         <h2 className="text-gray-900 title-font text-xl font-medium">{books.attributes.name}</h2>
-                                                        <p className="mt-1 text-ellipsis font-semibold">{books.attributes.price - (books.attributes.price * books.attributes.promotion.discount )} đ</p>
+                                                        <p className="mt-1 text-ellipsis font-semibold  line-through text-red-500 text-xs">
+                                                            {new Intl.NumberFormat('en-US').format(books.attributes.price)}
+                                                            đ</p>
+                                                        <p className="mt-1 text-ellipsis font-semibold"> {new Intl.NumberFormat('en-US').format(books.attributes.price - (books.attributes.price * books.attributes.promotion.discount))} đ</p>
                                                     </div>
                                                 </div>
                                             )
                                         })
                                     }
                                 </div>
-                            </div>
-                        </section>
-                        :
-                        <div>Loading....</div>
-                }
+                                :
+                                <div>Loading....</div>
+                        }
+                    </div>
+                </section>
                 <div >
                     <ReactPaginate
                         activePage={currentPage}
                         itemsCountPerPage={state.perPage}
                         totalItemsCount={totalCount}
-                        pageRangeDisplayed={5} 
+                        pageRangeDisplayed={5}
                         onChange={handlePageChange}
                         innerClass='flex justify-center items-center'
                         itemClass='mr-5 hover:text-blue-500'
